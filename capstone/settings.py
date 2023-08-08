@@ -25,12 +25,13 @@ SECRET_KEY = "django-insecure-@-0a)z_m_1z--4nm+*&4crmbv=(dtw+!viu75ntzpx*)b2=b9m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "palinodesmusic",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -80,7 +81,9 @@ DATABASES = {
     }
 }
 
-
+AUTH_USER_MODEL = "palinodesmusic.User"
+LOGIN_REDIRECT_URL = '/login'
+LOGIN_URL = '/login'
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
