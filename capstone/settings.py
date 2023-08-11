@@ -31,7 +31,8 @@ ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
-    "palinodesmusic",
+    "django_rename_app",
+    "palinodes",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -81,7 +82,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = "palinodesmusic.User"
+AUTH_USER_MODEL = "palinodes.User"
 LOGIN_REDIRECT_URL = '/login'
 LOGIN_URL = '/login'
 # Password validation

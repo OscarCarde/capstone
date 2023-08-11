@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class PalinodesmusicConfig(AppConfig):
+class PalinodesConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "palinodesmusic"
+    name = "palinodes"
