@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -38,8 +40,9 @@ class FileModel(models.Model):
     parent_repository = models.ForeignKey(Repository, on_delete=models.CASCADE, related_name="contents")
     file = models.FileField(upload_to=get_file_upload_path)
 
-    def path(self):
-        return f"{self.parent_folder.path}/{self.file.path}"
+    @property
+    def filename(self):
+        return os.path.basename(self.file.name)
     
 ###############################################
 
