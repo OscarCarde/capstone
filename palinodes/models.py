@@ -33,17 +33,17 @@ class Directory(models.Model):
         else:
             return f"{self.parent_folder.path}/{self.name}"
 
-class File(models.Model):
+class FileModel(models.Model):
     parent_folder = models.ForeignKey(Directory, null= True, blank=True, on_delete=models.CASCADE, related_name="files")
     parent_repository = models.ForeignKey(Repository, on_delete=models.CASCADE, related_name="contents")
     file = models.FileField(upload_to=get_file_upload_path)
 
     def path(self):
-        return self.file.url
+        return f"{self.parent_folder.path}/{self.file.path}"
     
 ###############################################
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="comments")
-    file = models.ForeignKey(File, on_delete=models.CASCADE, related_name="comments")
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.DO_NOTHING, related_name="comments")
+    file = models.ForeignKey(FileModel, blank=True, null=True, on_delete=models.CASCADE, related_name="comments")
     comment = models.TextField()
