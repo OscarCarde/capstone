@@ -1,7 +1,11 @@
 {% extends 'palinodes/layout.html' %}
 
 {% block title %}index{% endblock %}
+{% block script %}
+        <script  src={% static 'palinodes/index.js' %}></script>
+{% endblock %}
 
 {% block body %}
     <h1>Hello Oscar</h1>
+    <table>repositories view todo</table>
 {% endblock %}
