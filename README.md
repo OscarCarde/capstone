@@ -2,7 +2,7 @@
 
 - [ ] **Backend (Django):**
   - [ ] User Authentication and Registration:
-    - [ ] User registration and login using Django's built-in authentication system.
+    - [x] User registration and login using Django's built-in authentication system.
     - [ ] User profile management, including profile pictures and basic information.
 
   - [ ] Project Creation and Management:

@@ -1,4 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+
 
 from django.shortcuts import render
 from django.urls import reverse
@@ -6,12 +8,18 @@ from django.http import HttpResponseRedirect
 
 from django.db import IntegrityError
 
-from .models import User
+from .models import User, Profile, Repository
 
 #################__LANDING__########################
+@login_required
 def index(request):
     return render(request, "palinodes/index.html")
 
+def repository(request, repository_id):
+    repository = Repository.objects.get(id=repository_id)
+    return render(request, "palinodes/repository.html", {
+        "repository": repository
+    })
 ##################__AUTHENTICATION__################
 def login_view(request):
     if request.method == "POST":
@@ -55,6 +63,8 @@ def register(request):
         try:
             user = User.objects.create_user(username, email, password)
             user.save()
+            profile = Profile.objects.create(user=user)
+            profile.save()
         except IntegrityError:
             return render(request, "palinodes/register.html", {
                 "message": "Username already taken."

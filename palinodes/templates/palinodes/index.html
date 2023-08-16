@@ -1,11 +1,37 @@
 {% extends 'palinodes/layout.html' %}
+{% load static %}
 
 {% block title %}index{% endblock %}
 {% block script %}
         <script  src={% static 'palinodes/index.js' %}></script>
-{% endblock %}
+{% endblock script %}
 
 {% block body %}
-    <h1>Hello Oscar</h1>
-    <table>repositories view todo</table>
+    <h1>Hello {{user.username}}</h1>
+
+    <div class="container">
+        <ul class="nav nav-tabs d-flex justify-content-start text-bg-dark">
+            <li class="nav-link pe-5 me-2 text-white" id="my-repositories-btn">My repositories</li>
+            <li class="nav-link pe-5 me-2 text-white" id="collaborating-btn">Collaborating</li>
+        </ul>
+        <table class="table tab-content text-white">
+            <tbody>
+            {% if user.repositories %}
+                {% for repository in user.repositories.all%}
+                <tr class="repositories-tr ">
+                    <td class="py-5"><a href={% url 'repository' repository.id %}><strong>{{repository.name}}</strong></a></td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+            {% if user.collaborating %}
+                {% for repository in user.collaborating.all %}
+                <tr class="collaborating-tr">
+                    <td class="py-5"><a href={% url 'repository' repository.id %}><strong>{{repository.name}}</strong></a></td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+            
+        </table>
+    </div>
 {% endblock %}

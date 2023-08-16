@@ -1,9 +1,22 @@
 {% extends 'palinodes/layout.html' %}
+{% load static %}
 
-{% block title %}
-    repository name todo
-{% endblock  %}
+{% block title %}index{% endblock %}
+{% block script %}
+        <script  src={% static 'palinodes/index.js' %}></script>
+{% endblock script %}
 
 {% block body %}
-    <table>files view todo</table>
-{% endblock body %}
+    <h1>{{repository.name}}</h1>
+
+    <div class="container">
+        <table class="table tab-content text-white col">
+            <tbody id="file-structure">
+            </tbody>
+        </table>
+
+        <div class="col">
+
+        </div>
+    </div>
+{% endblock %}
