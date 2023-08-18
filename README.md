@@ -5,7 +5,7 @@
   - [ ] User profile management, including profile pictures and basic information.
 
 - [ ] Dashboard:
-  - [ ] From their dashboard, Users can create new music projects, providing a title and description.
+  - [ ] From their dashboard, Users can create new music project repository, providing a title and description.
   - [x] When Logged-in, a user should be brought to their dashboard
   - [ ] The Dashboard should display all the repositories that the user owns or is a collaborator on 
   - [ ] The Dashboard should display a notification on each repository with a new message or file uploaded
