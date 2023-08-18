@@ -12,6 +12,7 @@ def get_avatar_path(instance, filename):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    description = models.TextField(default="", max_length=300, blank=True)
     avatar = models.ImageField(upload_to=get_avatar_path, blank=True)
 
     def __str__(self):

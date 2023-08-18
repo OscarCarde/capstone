@@ -11,15 +11,22 @@ from django.db import IntegrityError
 from .models import User, Profile, Repository
 
 #################__LANDING__########################
-@login_required
-def index(request):
-    return render(request, "palinodes/index.html")
 
-def repository(request, repository_id):
+def index(request):
+    return HttpResponseRedirect('dashboard')
+
+@login_required
+def dashboard(request):
+     return render(request, "palinodes/dashboard.html")
+
+def repository_view(request, repository_id):
     repository = Repository.objects.get(id=repository_id)
     return render(request, "palinodes/repository.html", {
         "repository": repository
     })
+
+##################__APIS__##########################
+#def repositories()
 ##################__AUTHENTICATION__################
 def login_view(request):
     if request.method == "POST":
@@ -43,7 +50,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse("index"))
+    return HttpResponseRedirect(reverse("login"))
 
 
 def register(request):
