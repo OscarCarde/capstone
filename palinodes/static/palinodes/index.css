@@ -1,6 +1,6 @@
 body {
     background-color: black;
-    color: white;
+    color: rgb(217, 217, 217);
     text-decoration: none;
     font-family:sans-serif;
     max-width: 100vw;
@@ -27,15 +27,25 @@ img {
     object-fit: contain;
 }
 
+button {
+    margin-top: 20px;
+    padding: 8px;
+    color: white;
+    font-size: large;
+    width: 300px;
+    background-color: #323338;
+}
+
 .bordered {
     border: solid;
     border-color: #88959c88;
     border-width: 1px;
-    border-radius: 10px;
+    border-radius: 7px;
 }
 
 .clickable:hover {
     background-color: #88959c88;
+    border-color: #ffffff;
     cursor: pointer;
 }
 
