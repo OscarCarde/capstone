@@ -3,7 +3,6 @@ import os
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-
 class User(AbstractUser):
     pass
 
@@ -21,12 +20,20 @@ class Profile(models.Model):
 
 
 ####### Hierarchical directory structure ########
+class Parent(models.Model):
+    name = models.CharField(max_length=50)
+
+    def path(self):
+        pass
+
+    def __str__(self):
+        return self.name
 
 def get_file_upload_path(instance, filename):
-    return f"{instance.parent_folder.path}/{filename}"
+    return f"{instance.parent.path}/{filename}"
 
-class Repository(models.Model):
-    name = models.CharField(max_length=50)
+class Repository(Parent):
+    #name = models.CharField(max_length=50)
     description = models.TextField(max_length=300, blank=True)
     created = models.DateField(auto_now=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="repositories")
@@ -35,28 +42,32 @@ class Repository(models.Model):
     @property
     def number_of_collaborators(self):
         return self.collaborators.count()
+    
+    @property
+    def path(self):
+        return f"{self.owner.id}/{self.name}"
+    
+    def __str__(self):
+        return self.name
 
-class Directory(models.Model):
-    name = models.CharField(max_length=50)
-    parent_folder = models.ForeignKey("self", null= True, blank=True, on_delete=models.CASCADE, related_name="subdirectories")
-    parent_repository = models.ForeignKey(Repository, on_delete=models.CASCADE, related_name="directories")
+class Directory(Parent):
+    #name = models.CharField(max_length=50)
+    parent = models.ForeignKey(Parent, on_delete=models.CASCADE, related_name="subdirectories")
 
     @property
     def path(self):
-        if not self.parent_folder:
-            return f"{self.parent_repository.owner.id}/{self.parent_repository.name}/{self.name}"
-        else:
-            return f"{self.parent_folder.path}/{self.name}"
+        return f"{self.parent.path}/{self.name}"
 
 class FileModel(models.Model):
-    parent_folder = models.ForeignKey(Directory, null= True, blank=True, on_delete=models.CASCADE, related_name="files")
-    parent_repository = models.ForeignKey(Repository, on_delete=models.CASCADE, related_name="contents")
+    parent = models.ForeignKey(Parent, on_delete=models.CASCADE, related_name="files")
     file = models.FileField(upload_to=get_file_upload_path)
 
     @property
     def filename(self):
         return os.path.basename(self.file.name)
     
+    def __str__(self):
+        return self.filename
 ###############################################
 
 class Comment(models.Model):

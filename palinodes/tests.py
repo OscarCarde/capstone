@@ -9,9 +9,9 @@ class DirectoryTestCase(TestCase):
     def setUp(self):
         self.user1 = User.objects.create(id=1000, username = "Alice")
         self.repo = Repository.objects.create(name="repo", owner = self.user1)
-        self.dir1 = Directory.objects.create(name = "dir1", parent_repository = self.repo)
-        self.dir2 = Directory.objects.create(name = "dir11", parent_repository = self.repo, parent_folder=self.dir1)
-        self.dir3 = Directory.objects.create(name = "dir111", parent_repository = self.repo, parent_folder=self.dir2)
+        self.dir1 = Directory.objects.create(name = "dir1", parent = self.repo)
+        self.dir2 = Directory.objects.create(name = "dir11", parent=self.dir1)
+        self.dir3 = Directory.objects.create(name = "dir111", parent=self.dir2)
 
     def test_directory_path(self):
 
@@ -30,9 +30,9 @@ class FileTestCase(TestCase):
     def setUp(self) -> None:
         self.user = User.objects.create(id=1000, username="Phillip")
         self.repo = Repository.objects.create(name="test_repository", owner = self.user)
-        self.dir = Directory.objects.create(name = "test_directory", parent_repository = self.repo)
+        self.dir = Directory.objects.create(name = "test_directory", parent = self.repo)
         with open("palinodes/testFiles/cvt.docx", 'rb') as file:
-            self.file1 = FileModel(parent_folder=self.dir, parent_repository=self.repo)
+            self.file1 = FileModel(parent=self.dir)
             self.file1.file.save('cvt.docx', File(file))
 
     def tearDown(self):
