@@ -1,0 +1,168 @@
+body {
+    background-color: black;
+    color: rgb(217, 217, 217);
+    text-decoration: none;
+    font-family:sans-serif;
+    max-width: 100vw;
+    min-height: 100vh;
+}
+
+* {
+    /*border: dashed;*/
+    border-color: red;
+}
+
+a {
+    text-decoration: none;
+    color: #457CE8;
+    font-weight:bold;
+    font-size: larger;
+}
+
+ul {
+    list-style-type: none;
+}
+
+img {
+    object-fit: contain;
+}
+
+button {
+    margin-top: 20px;
+    padding: 8px;
+    color: white;
+    font-size: large;
+    width: 300px;
+    background-color: #323338;
+}
+
+.bordered {
+    border: solid;
+    border-color: #88959c88;
+    border-width: 1px;
+    border-radius: 7px;
+}
+
+.clickable:hover {
+    background-color: #88959c88;
+    border-color: #ffffff;
+    cursor: pointer;
+}
+
+.clickable:active {
+    background-color: rgb(37, 44, 45);
+    border-color: rgb(37, 44, 45);
+}
+
+#top-navbar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+    background-color: black;
+    width: 95%;
+}
+
+    #top-navbar ul {
+        margin-left: 200px;
+    }
+
+#body-block {
+    display: grid;
+    min-height: 100vh;
+    grid-template-columns: 2fr 4fr 1fr;
+}
+    #profile-banner {
+        grid-column: 1 / span 1;
+        margin-top: 150px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+        #avatar {
+            width: 300px;
+            height: 300px;
+            border-radius: 90%;
+            background-color: #323338;
+        }
+
+
+    #repositories-list {
+        grid-column: 2 / span 1;
+
+        display: flex;
+        flex-direction: column;
+    }
+        #repositories-list ul {
+            display: flex;
+        
+            background-color: black;
+            width: 100%;
+        }
+
+            #repositories-list ul li {
+                display: block;
+                width: 150px;
+                padding: 10px;
+                text-align: center;
+                margin-left: 75px;
+            }
+
+            #new-repository-icn {
+                align-self: center;
+                border-radius: 90%;
+            }
+
+            #new-repository-icn:hover {
+                border: solid;
+            }
+
+    #repositories-container {
+        margin: 20px auto auto 20px;
+        align-self: center;
+        width: 100%;
+        display: flex;
+        justify-content: baseline;
+        flex-wrap: wrap;
+        align-content: stretch;
+    }
+
+        .repositories-li {
+            flex-basis: 400px;
+            margin: 10px;
+            padding: 10px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+            .repositories-li * {
+                margin: 4px;
+            }
+
+            .repository-link {
+                display: flex;
+            }
+
+            .repository-link svg {
+                margin: 0px 20px 0px 5px;
+            }
+
+            .dash-repo-owner-name {
+                font-weight: 50;
+                color: #ffffff88;
+                font-style: italic;
+            }
+
+            .dash-repo-description {
+                font-weight: 50;
+                color: #ffffff88;
+            }
+
+            .dash-collaborators {
+                display: flex;
+                justify-content: space-between;
+            }
+
+                .dash-collaborators div {
+                    display: flex;
+                }
