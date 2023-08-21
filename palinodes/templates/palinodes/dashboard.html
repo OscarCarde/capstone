@@ -11,6 +11,8 @@
 <div id="profile-banner">
     {% if user.profile.avatar %}
     <img id="avatar" src={{user.profile.avatar.url}}>
+    {% else %}
+    <img style="background-color: black;" id="avatar" src='/media/Default-Profile-Picture.png' >
     {% endif %}
     <h1>{{user.username}}</h1>
     <p><em>{{user.profile.description}}</em></p>
@@ -23,10 +25,23 @@
         <li class="bordered clickable" id="recent-btn">Recent</li>
         <li class="bordered clickable" id="my-repositories-btn">My repositories</li>
         <li class="bordered clickable" id="collaborating-btn">Collaborating</li>
+        <li class="clickable" id="new-repository-icn" style= "width: auto; height: 24px; padding: 0px; border-radius:90%; align-self: center"> 
+            <svg  width="23" height="24" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_87_48)">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 8.5C1.5 4.68578 4.41015 1.59375 8 1.59375C11.5899 1.59375 14.5 4.68578 14.5 8.5C14.5 12.3143 11.5899 15.4062 8 15.4062C4.41015 15.4062 1.5 12.3143 1.5 8.5ZM8 0C3.58172 0 0 3.80558 0 8.5C0 13.1944 3.58172 17 8 17C12.4183 17 16 13.1944 16 8.5C16 3.80558 12.4183 0 8 0ZM8.75 5.04688C8.75 4.60678 8.41421 4.25 8 4.25C7.58579 4.25 7.25 4.60678 7.25 5.04688V7.70312H4.75C4.33579 7.70312 4 8.0599 4 8.5C4 8.9401 4.33579 9.29688 4.75 9.29688H7.25V11.9531C7.25 12.3932 7.58579 12.75 8 12.75C8.41421 12.75 8.75 12.3932 8.75 11.9531V9.29688H11.25C11.6642 9.29688 12 8.9401 12 8.5C12 8.0599 11.6642 7.70312 11.25 7.70312H8.75V5.04688Z" fill="white"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_87_48">
+                <rect width="16" height="17" fill="white"/>
+                </clipPath>
+                </defs>
+                </svg>
+                
+        </li>
     </ul>
     <div id="repositories-container">
-        {% if user.repositories %}
-            {% for repository in user.repositories.all%}
+        {% if user.profile.repositories %}
+            {% for repository in user.profile.repositories%}
             <div class="repositories-li owned-repositories bordered clickable">
                 <div class="repository-link">
                     <svg width="26" height="24" viewBox="0 0 26 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -55,7 +70,10 @@
                 </div>
             </div>
             {% endfor %}
+        {% else %}
+        
         {% endif %}
+
         {% if user.collaborating %}
             {% for repository in user.collaborating.all %}
             <div class="repositories-li collaborating-repositories bordered clickable">

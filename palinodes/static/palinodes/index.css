@@ -107,6 +107,14 @@ button {
                 margin-left: 75px;
             }
 
+            #new-repository-icn {
+                align-self: center;
+                border-radius: 90%;
+            }
+
+            #new-repository-icn:hover {
+                border: solid;
+            }
 
     #repositories-container {
         margin: 20px auto auto 20px;
