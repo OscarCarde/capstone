@@ -8,6 +8,8 @@ from django.http import HttpResponseRedirect
 
 from django.db import IntegrityError
 
+from django.views.generic.edit import CreateView
+
 from .models import User, Profile, Directory
 
 #################__LANDING__########################
@@ -19,6 +21,11 @@ def index(request):
 def dashboard(request):
      return render(request, "palinodes/dashboard.html")
 
+class create_repository(CreateView):
+    model = Directory
+    fields = ['name', 'description', 'collaborators']
+
+    
 def repository_view(request, repository_id):
     repository = Directory.objects.get(id=repository_id)
     return render(request, "palinodes/repository.html", {
