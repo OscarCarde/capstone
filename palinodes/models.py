@@ -14,52 +14,49 @@ class Profile(models.Model):
     description = models.TextField(default="", max_length=300, blank=True)
     avatar = models.ImageField(upload_to=get_avatar_path, blank=True)
 
+    @property
+    def repositories(self):
+        return Directory.objects.filter(owner=self.user, parent = None)
+
     def __str__(self):
         return self.user.username
     
 
 
 ####### Hierarchical directory structure ########
-class Parent(models.Model):
-    name = models.CharField(max_length=50)
-
-    def path(self):
-        pass
-
-    def __str__(self):
-        return self.name
-
 def get_file_upload_path(instance, filename):
-    return f"{instance.parent.path}/{filename}"
+        return f"{instance.parent.path}/{filename}"
 
-class Repository(Parent):
-    #name = models.CharField(max_length=50)
-    description = models.TextField(max_length=300, blank=True)
+class Directory(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField(max_length=300, blank=True, null=True)
     created = models.DateField(auto_now=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="repositories")
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="directories")
     collaborators = models.ManyToManyField(User, blank=True, related_name="collaborating")
+    parent = models.ForeignKey("self", blank=True, null=True, on_delete=models.CASCADE, related_name="subdirectories")
 
     @property
     def number_of_collaborators(self):
         return self.collaborators.count()
     
     @property
-    def path(self):
-        return f"{self.owner.id}/{self.name}"
+    def path(self) -> str:
+        '''recursively retreives the path of the instance directory'''
+        if not self.parent:
+            return f"{self.owner.id}/{self.name}"
+        else:
+            return f"{self.parent.path}/{self.name}"
+        
+    @property
+    def is_repository(self):
+        return self.parent == None
     
     def __str__(self):
-        return self.name
+        return f"REPOSITORY: {self.name}" if self.is_repository else self.name
 
-class Directory(Parent):
-    #name = models.CharField(max_length=50)
-    parent = models.ForeignKey(Parent, on_delete=models.CASCADE, related_name="subdirectories")
-
-    @property
-    def path(self):
-        return f"{self.parent.path}/{self.name}"
 
 class FileModel(models.Model):
-    parent = models.ForeignKey(Parent, on_delete=models.CASCADE, related_name="files")
+    parent = models.ForeignKey(Directory, on_delete=models.CASCADE, related_name="files")
     file = models.FileField(upload_to=get_file_upload_path)
 
     @property

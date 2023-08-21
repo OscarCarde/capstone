@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 
 from django.db import IntegrityError
 
-from .models import User, Profile, Repository
+from .models import User, Profile, Directory
 
 #################__LANDING__########################
 
@@ -20,7 +20,7 @@ def dashboard(request):
      return render(request, "palinodes/dashboard.html")
 
 def repository_view(request, repository_id):
-    repository = Repository.objects.get(id=repository_id)
+    repository = Directory.objects.get(id=repository_id)
     return render(request, "palinodes/repository.html", {
         "repository": repository
     })

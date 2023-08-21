@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Repository
+from .models import Directory
 
 class RepositorySerializer(serializers.ModelSerializer):
     owner = serializers.CharField(source='owner.username', read_only=True)
@@ -9,6 +9,6 @@ class RepositorySerializer(serializers.ModelSerializer):
         return list(obj.collaborators.values_list("username", flat=True))
 
     class Meta:
-        model = Repository
+        model = Directory
         fields = ['name', 'description', 'created', 'owner', 'collaborators_names']
         
