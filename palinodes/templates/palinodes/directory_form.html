@@ -1,5 +1,9 @@
 {% extends 'palinodes/layout.html' %}
 
+{% block navbar %}
+<li><a href={% url 'dashboard' %}>Dashboard</a></li>
+{% endblock navbar %}
+
 {% block body %}
     <h2>New Repository</h2>
     <form id="new-repository-form" method="post">{% csrf_token %}

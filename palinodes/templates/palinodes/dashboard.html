@@ -45,6 +45,7 @@
         {% if user.profile.repositories %}
             {% for repository in user.profile.repositories%}
             <div class="repositories-li owned-repositories bordered clickable">
+                <a class="link-layer" href={% url 'repository' repository.id %}></a>
                 <div class="repository-link">
                     <svg width="26" height="24" viewBox="0 0 26 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                         <rect width="26" height="24" fill="url(#pattern0)"/>

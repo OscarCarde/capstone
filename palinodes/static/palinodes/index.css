@@ -54,6 +54,14 @@ button {
     border-color: rgb(37, 44, 45);
 }
 
+.link-layer {
+    flex:1;
+    position: absolute;
+    width: 400px;
+    height: 92%;
+    
+}
+
 #top-navbar {
     padding: 10px;
     background-color: black;
@@ -101,6 +109,7 @@ button {
 
             #repositories-list ul li {
                 display: block;
+                position: relative;
                 width: 150px;
                 padding: 10px;
                 text-align: center;
@@ -128,11 +137,13 @@ button {
 
         .repositories-li {
             flex-basis: 400px;
+            position: relative;
             margin: 10px;
             padding: 10px 10px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            overflow: hidden;
         }
 
             .repositories-li * {
