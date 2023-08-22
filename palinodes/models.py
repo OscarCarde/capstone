@@ -7,7 +7,7 @@ class User(AbstractUser):
     pass
 
 def get_avatar_path(instance, filename):
-    return f"media/{instance.user.id}/{filename}"
+    return f"{instance.user.id}/{filename}"
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")

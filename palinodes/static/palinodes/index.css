@@ -181,7 +181,7 @@ button {
         width: 300px;
     }
     
-    #id_name, #id_description, #id_collaborators{
+    #id_name, #id_description, #id_collaborators, #id_owner {
         margin: 10px;
         border: solid;
         border-color: #88959c88;
