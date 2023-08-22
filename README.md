@@ -1,14 +1,24 @@
 **Specification:**
 
-- [ ] User Authentication and Registration:
+- [x] User Authentication and Registration:
   - [x] User registration and login using Django's built-in authentication system.
-  - [ ] User profile management, including profile pictures and basic information.
+  - [x] When a user registers, a profile should automatically be created
+  
+  
+- [ ] Profile: From their Dashboard, users should be able to update their profile's details
+  - [ ] The form should appear on the same page
+  - [ ] The page shouldn't reload on validation
 
 - [ ] Dashboard:
-  - [ ] From their dashboard, Users can create new music project repository, providing a title and description.
   - [x] When Logged-in, a user should be brought to their dashboard
-  - [ ] The Dashboard should display all the repositories that the user owns or is a collaborator on 
-  - [ ] The Dashboard should display a notification on each repository with a new message or file uploaded
+  - [x] The Dashboard should display all the repositories that the user owns or is a collaborator on 
+  - [x] Each repository should display it's title, description, owner and number of collaborators
+  - [x] When clicking on a repository, the user should be directed to the page for that repository
+  
+- [ ] Notifications: the Dashboard should display a notification on each repository with a new message or file uploaded
+
+- [x] Create View: There should be a link on the dashboard to bring the user to a new repository form 
+  - [x]  Users can create new music project repository, providing a title and description.
 
 - [ ] Project View:
   - [ ] The owner and collaborating users can create directories,
@@ -19,7 +29,7 @@
 
 - [ ] File Storage:
     - [ ] The file structure of repositories looks and feels like a standard hierarchical file structure.
-    - [ ] The files should be stored on the server in the path "user_id/repository/" and reflect the file structure of the repository.
+    - [x] The files should be stored on the server in the path "user_id/repository/" and reflect the file structure of the repository.
 
 - [ ] Version Control:
   - [ ] Implementation of version control for music files (tracks, samples, etc.).
