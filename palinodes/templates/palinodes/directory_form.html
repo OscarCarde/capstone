@@ -1,0 +1,9 @@
+{% extends 'palinodes/layout.html' %}
+
+{% block body %}
+    <h2>New Repository</h2>
+    <form id="new-repository-form" method="post">{% csrf_token %}
+        {{form}}
+        <input class="clickable bordered" id="id_submit" type="submit" value="Save">
+    </form>
+{% endblock body %}

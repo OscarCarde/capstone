@@ -8,7 +8,11 @@ from django.http import HttpResponseRedirect
 
 from django.db import IntegrityError
 
+from django.views.generic.edit import CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from .models import User, Profile, Directory
+from .forms import RepositoryForm
 
 #################__LANDING__########################
 
@@ -18,6 +22,20 @@ def index(request):
 @login_required
 def dashboard(request):
      return render(request, "palinodes/dashboard.html")
+
+class CreateRepository(LoginRequiredMixin, CreateView):
+    model = Directory
+    form_class = RepositoryForm
+    
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Use reverse to generate the URL using the model's id
+        return reverse("repository", args=[str(self.object.id)])
+
+
 
 def repository_view(request, repository_id):
     repository = Directory.objects.get(id=repository_id)
