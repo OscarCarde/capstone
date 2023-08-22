@@ -6,6 +6,10 @@
         <script  src={% static 'palinodes/index.js' %}></script>
 {% endblock script %}
 
+{% block navbar %}
+<li><a href={% url 'dashboard' %}>Dashboard</a></li>
+{% endblock navbar %}
+
 {% block body %}
     <h1>{{repository.name}}</h1>
 

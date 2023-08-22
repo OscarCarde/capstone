@@ -55,15 +55,15 @@ button {
 }
 
 #top-navbar {
-    display: flex;
-    justify-content: flex-end;
     padding: 10px;
     background-color: black;
     width: 95%;
 }
 
     #top-navbar ul {
-        margin-left: 200px;
+        margin-left: 100px;
+        display: flex;
+        justify-content: space-between;
     }
 
 #body-block {
