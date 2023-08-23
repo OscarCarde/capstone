@@ -49,6 +49,7 @@ def directory_api(request, pk):
     directory = Directory.objects.get(pk=pk)
     subdirectories = directory.subdirectories
     directory_serializer = DirectorySerializer(subdirectories, many=True)
+    files = directory.files
     file_serializer = FileSerializer(files, many=True)
     return JsonResponse({"subdirectories":directory_serializer.data, "files": file_serializer.data})
 

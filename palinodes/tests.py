@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import Client, TestCase
 from .models import *
 from .serializers import *
 
@@ -87,3 +87,26 @@ class ProfileTestCase(TestCase):
         for repository in self.profile.repositories:
             self.assertEquals(pk, repository.pk, "repository doesn't match")
             pk += 1000
+
+class DirectoryApiTestCase(TestCase):
+    '''tests for the directory_api in views.py'''
+    def setUp(self):
+        self.user = User.objects.create(id=1000, username = "Alice")
+        self.dir = Directory.objects.create(pk=2000, name="test dir", owner = self.user, description="Test Directory")
+        self.dir1 = Directory.objects.create(pk=3000, name="test subdir", owner = self.user, parent=self.dir)
+        with open("palinodes/testFiles/cvt.docx", 'rb') as file:
+            self.file = FileModel(parent=self.dir)
+            self.file.file.save('cvt.docx', File(file))
+
+    def tearDown(self):
+        self.file.file.delete()
+        super().tearDown()
+
+    def test_api_endpoint(self):
+        c = Client()
+        response = c.get(f"/directory/{self.dir.pk}")
+        subdirectories = response.json()["subdirectories"]
+        self.assertListEqual([{"pk":3000, "name":"test subdir"}], subdirectories, "subdirectories don't match")
+        files = response.json()["files"]
+        self.assertListEqual([{"filename": "cvt.docx", "fileurl": "/media/1000/test%20dir/cvt.docx"}], files, "files don't match")
+        c.logout()
