@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 
 from django.shortcuts import render
 from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 
 from django.db import IntegrityError
 
@@ -13,6 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import User, Profile, Directory
 from .forms import RepositoryForm
+from .serializers import DirectorySerializer, FileSerializer
 
 #################__LANDING__########################
 
@@ -44,7 +45,13 @@ def repository_view(request, repository_id):
     })
 
 ##################__APIS__##########################
-#def repositories()
+def directory_api(request, pk):
+    directory = Directory.objects.get(pk=pk)
+    subdirectories = directory.subdirectories
+    directory_serializer = DirectorySerializer(subdirectories, many=True)
+    file_serializer = FileSerializer(files, many=True)
+    return JsonResponse({"subdirectories":directory_serializer.data, "files": file_serializer.data})
+
 ##################__AUTHENTICATION__################
 def login_view(request):
     if request.method == "POST":
