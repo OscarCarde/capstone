@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Directory
+from .models import Directory, FileModel
 
 class RepositorySerializer(serializers.ModelSerializer):
     owner = serializers.CharField(source='owner.username', read_only=True)
@@ -12,3 +12,22 @@ class RepositorySerializer(serializers.ModelSerializer):
         model = Directory
         fields = ['name', 'description', 'created', 'owner', 'collaborators_names']
         
+class DirectorySerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model=Directory
+        fields=['pk', 'name']
+
+class FileSerializer(serializers.ModelSerializer):
+    filename = serializers.SerializerMethodField()
+    fileurl = serializers.SerializerMethodField()
+
+    def get_filename(self, obj):
+        return obj.filename
+    
+    def get_fileurl(self, obj):
+        return obj.file.url
+    
+    class Meta:
+        model=FileModel
+        fields = ['filename', 'fileurl']
