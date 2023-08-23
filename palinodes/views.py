@@ -49,9 +49,16 @@ def directory_api(request, pk):
     directory = Directory.objects.get(pk=pk)
     subdirectories = directory.subdirectories
     directory_serializer = DirectorySerializer(subdirectories, many=True)
+
     files = directory.files
     file_serializer = FileSerializer(files, many=True)
-    return JsonResponse({"subdirectories":directory_serializer.data, "files": file_serializer.data})
+
+    #add the parent directory if there is one, otherwise, set the parent field to null
+    parent = directory.parent
+    parent_serializer = DirectorySerializer(parent) if parent else None
+    parent_data = parent_serializer.data if parent_serializer else None
+
+    return JsonResponse({"parent": parent_data, "subdirectories":directory_serializer.data, "files": file_serializer.data})
 
 ##################__AUTHENTICATION__################
 def login_view(request):
