@@ -1,11 +1,60 @@
+const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+
 document.addEventListener('DOMContentLoaded', function() {
+    // create new directory
+    let newDirectory = document.querySelector("#new-directory");
+    newDirectory.addEventListener('click', () => {
+        //display new directory form as modal
+        var modal = document.querySelector("#new-directory-modal");
+        newDirectory.style.display = "none";
+        modal.style.display = "block";
+        
+        window.onclick = function(event) {
+            if (event.target == modal) {
+              modal.style.display = "none";
+              newDirectory.style.display = "block";
+            }
+        }
+        //add event listener to form for saving new directory
+        var submit = document.querySelector("#new-directory-form");
+        submit.addEventListener('submit', () => {
+            //call function to create new directory
+            var newDirectoryName = document.querySelector("#new-directory-name").value;
+            if(newDirectoryName != null) {
+                createNewDirectory(newDirectoryName);
+            }
+        });
+    });
+
     document.querySelectorAll('.directories').forEach(directory => {
         console.log(directory.dataset.pk)
         directory.addEventListener('click', () => {
             loadDirectoryContents(directory.dataset.pk)
         });
     })
-})
+});
+
+async function createNewDirectory(newDirectoryName) {
+    //post to api to create new directory from formData
+    //with the current directory as parent
+    parent_pk = document.querySelector("#parent").dataset.pk;
+    await fetch("/new-directory", {
+        method: 'POST',
+        headers: {
+            'ContentType':'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({
+            "name": newDirectoryName,
+            'parent_pk': parent_pk,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        loadDirectoryContents(data.directory_pk);
+    })
+    
+}
 
 async function loadDirectoryContents(directory_pk) {
     document.querySelector("#contents").replaceChildren()
@@ -14,8 +63,17 @@ async function loadDirectoryContents(directory_pk) {
     await fetch(`/directory/${directory_pk}`)
     .then(response => response.json())
     .then(data => {
-        // folder link to return to parent directory
 
+        //hidden current directory data
+        var currentDirectory = document.createElement("div");
+        currentDirectory.style.display = "none";
+        currentDirectory.setAttribute("id", "parent");
+        currentDirectory.setAttribute("data-name", data.current.name);
+        currentDirectory.setAttribute("data-pk", data.current.pk);
+        document.getElementById("contents").append(currentDirectory);
+
+
+        // folder link to return to parent directory
         if(data.parent != null) {
             let parent = document.createElement("div");
             let hiddenfolderIcon = document.querySelector("#folder-icon");
@@ -31,6 +89,8 @@ async function loadDirectoryContents(directory_pk) {
             });
             document.getElementById("contents").append(parent);
         }
+
+
         
         data.subdirectories.forEach(subdirectory => {
             //add the link to the parent directory

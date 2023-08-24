@@ -274,6 +274,34 @@ button {
             justify-content: space-between;
         }
 
+            #new-directory-modal {
+                display: none; /* Hidden by default */
+                position: fixed;
+                z-index: 1;
+                width: 100%; 
+                height: 100%; /* Full height */
+                overflow: auto; /* Enable scroll if needed */
+                background-color: transparent; /* Fallback color */
+            }
+
+                #new-directory-form {
+                    background-color: transparent;
+                    padding: 10px;
+                    margin-left: 300px;
+                    width: 80%; /* Could be more or less, depending on screen size */
+                }
+
+                    #new-directory-form * {
+                        background-color: transparent;
+                        color: white;
+                        font-size: large;
+                        padding: 7px;
+                    }
+
+                    #new-directory-form input[type="submit"] {
+                        border: none;
+                    }
+
             #current-path {
                 display: flex;
                 justify-content: space-around;
