@@ -21,7 +21,11 @@ class DirectorySerializer(serializers.ModelSerializer):
 class FileSerializer(serializers.ModelSerializer):
     filename = serializers.SerializerMethodField()
     fileurl = serializers.SerializerMethodField()
+    is_audiofile = serializers.SerializerMethodField()
 
+    def get_is_audiofile(self, obj):
+        return obj.is_audiofile
+    
     def get_filename(self, obj):
         return obj.filename
     
@@ -30,4 +34,4 @@ class FileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model=FileModel
-        fields = ['filename', 'fileurl']
+        fields = ['filename', 'fileurl', 'is_audiofile']

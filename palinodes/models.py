@@ -63,8 +63,15 @@ class FileModel(models.Model):
     def filename(self):
         return os.path.basename(self.file.name)
     
+    @property
+    def is_audiofile(self):
+        extension3 = self.filename[-3:]
+        extension4 = self.filename[-4:]
+        return extension3 in ["mp3", "wav", "aac", "m4a", ] or extension4 in ["flac", "aiff"]
+    
     def __str__(self):
         return self.filename
+    
 ###############################################
 
 class Comment(models.Model):

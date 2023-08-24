@@ -1,6 +1,18 @@
+//import {Howl, Howler} from 'howler';
+
 const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
 
 document.addEventListener('DOMContentLoaded', function() {
+    
+    /*var sound = new Howl({
+        src: ['ugly_thing_full_song_best_take.mp3']
+      });
+      
+      // Play the sound.
+      sound.play();
+      
+      // Change global volume.
+      Howler.volume(0.5);*/
     // create new directory
     let newDirectory = document.querySelector("#new-directory");
     newDirectory.addEventListener('click', () => {
@@ -111,7 +123,12 @@ async function loadDirectoryContents(directory_pk) {
         })
         data.files.forEach(file => {
             let container = document.createElement('div');
-            let hiddenfileIcon = document.querySelector("#file-icon");
+            if(file.is_audiofile){
+                var hiddenfileIcon = document.querySelector("#audiofile-icon");
+            }
+            else {
+                var hiddenfileIcon = document.querySelector("#file-icon");
+            }
             let fileIcon = hiddenfileIcon.cloneNode(true);
             fileIcon.style.display = "block";
             let filename = document.createElement('p');
