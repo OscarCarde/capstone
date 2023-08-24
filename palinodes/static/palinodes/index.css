@@ -273,9 +273,15 @@ button {
             display: flex;
             justify-content: space-between;
         }
-            #repository-contents-topbar p {
-                color: #457CE8;
+
+            #current-path {
+                display: flex;
+                justify-content: space-around;
             }
+
+                #repository-contents-topbar p {
+                    color: #457CE8;
+                }
 
             #new-directory {
                 padding-top: 0px;

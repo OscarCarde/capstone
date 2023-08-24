@@ -15,6 +15,7 @@ async function loadDirectoryContents(directory_pk) {
     .then(response => response.json())
     .then(data => {
         // folder link to return to parent directory
+
         if(data.parent != null) {
             let parent = document.createElement("div");
             let hiddenfolderIcon = document.querySelector("#folder-icon");
