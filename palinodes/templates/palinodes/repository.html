@@ -44,6 +44,7 @@
         </div>
         
         <div id="repository-contents">
+            <div style="display:none;" id="parent" data-name="{{repository.name}}" data-pk="{{repository.pk}}"></div>
             <div id="repository-contents-topbar">
                 <div id="current-path">
                     <p>{{repository.name}} /</p>
@@ -54,6 +55,12 @@
                         </svg>
                         
                 </button>
+                <div id="new-directory-modal">
+                    <form id="new-directory-form" >
+                        <input id="new-directory-name" class="clickable bordered" type="text">
+                        <input type="submit" value="+" class="clickable">
+                    </form>
+                </div>
             </div>
             <div id="contents">
                 {% for directory in repository.subdirectories.all %}

@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
+import json
 
 from django.db import IntegrityError
 
@@ -62,6 +63,22 @@ def directory_api(request, pk):
 
     return JsonResponse({"parent": parent_data, "current": directory_serializer.data, "subdirectories":subdirectories_serializer.data, "files": file_serializer.data})
 
+def new_directory_api(request):
+    
+    #get name and parent pk
+    raw_content = request.body
+    loaded_content = json.loads(raw_content)
+    name = loaded_content.get("name")
+    parent_pk = loaded_content.get("parent_pk")
+
+    #create new directory with parent
+    parent= Directory.objects.get(pk=parent_pk)
+    new_directory = Directory.objects.create(name= name, parent= parent, owner= parent.owner)
+    new_directory.collaborators.set(parent.collaborators.all())
+    new_directory.save()
+
+    return JsonResponse({"directory-pk": new_directory.pk})
+    
 ##################__AUTHENTICATION__################
 def login_view(request):
     if request.method == "POST":

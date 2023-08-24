@@ -110,3 +110,17 @@ class DirectoryApiTestCase(TestCase):
         files = response.json()["files"]
         self.assertListEqual([{"filename": "cvt.docx", "fileurl": "/media/1000/test%20dir/cvt.docx"}], files, "files don't match")
         c.logout()
+
+class NewDirectoryApiTestCase(TestCase):
+    def setUp(self) -> None:
+        self.user = User.objects.create(id=1000, username = "Alice")
+        self.dir = Directory.objects.create(pk=2000, name="test dir", owner = self.user, description="Test Directory")
+        self.dir1 = Directory.objects.create(pk=3000, name="test subdir", owner = self.user, parent=self.dir)
+        
+    def test_new_directory(self):
+        c = Client()
+        response = c.post("/new-directory", {"name": "test subsubdir", "parent_pk": self.dir1.pk}, content_type="application/json")
+        self.assertEquals(200, response.status_code)
+        directory = Directory.objects.get(name="test subsubdir")
+        if directory:
+            directory.delete()
