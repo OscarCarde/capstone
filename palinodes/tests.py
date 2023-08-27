@@ -33,20 +33,23 @@ class FileTestCase(TestCase):
         self.user = User.objects.create(id=1000, username="Phillip")
         self.repo = Directory.objects.create(name="test_repository", owner = self.user)
         self.dir = Directory.objects.create(name = "test_directory", owner = self.user, parent = self.repo)
-        with open("palinodes/testFiles/cvt.docx", 'rb') as file:
+        with open("palinodes/testFiles/codine.mp3", 'rb') as file:
             self.file1 = FileModel(parent=self.dir)
-            self.file1.file.save('cvt.docx', File(file))
+            self.file1.file.save('codine.mp3', File(file))
 
     def tearDown(self):
         self.file1.file.delete()
         super().tearDown()
 
     def test_filename(self):
-        self.assertEqual("cvt.docx", self.file1.filename, "The names don't match")
+        self.assertEqual("codine.mp3", self.file1.filename, "The names don't match")
 
 
     def test_correct_path(self):
-        self.assertEqual("1000/test_repository/test_directory/cvt.docx", self.file1.file.name, "The paths don't match")
+        self.assertEqual("1000/test_repository/test_directory/codine.mp3", self.file1.file.name, "The paths don't match")
+
+    def test_is_audiofile(self):
+        self.assertEquals(True, self.file1.is_audiofile, f"is_audiofile should return True but returns {self.file1.is_audiofile}")
 
 class RepositorySerializerTestCase(TestCase):
     def setUp(self) -> None:
