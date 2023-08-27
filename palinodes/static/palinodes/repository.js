@@ -1,19 +1,10 @@
-//import {Howl, Howler} from 'howler';
+//import WaveSurfer from '/static/palinodes/node_modules/wavesurfer.js/dist/wavesurfer.js';
+import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js'
+import TimelinePlugin from 'https://unpkg.com/wavesurfer.js@7/dist/plugins/timeline.esm.js'
 
 const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
 
 document.addEventListener('DOMContentLoaded', function() {
-    
-    /*var sound = new Howl({
-        src: ['ugly_thing_full_song_best_take.mp3']
-      });
-      
-      // Play the sound.
-      sound.play();
-      
-      // Change global volume.
-      Howler.volume(0.5);*/
-    // create new directory
     let newDirectory = document.querySelector("#new-directory");
     newDirectory.addEventListener('click', () => {
         //display new directory form as modal
@@ -44,7 +35,35 @@ document.addEventListener('DOMContentLoaded', function() {
             loadDirectoryContents(directory.dataset.pk)
         });
     })
+
+    document.querySelectorAll('.audiofile').forEach(audiofile => {
+        audiofile.addEventListener('click', () => {
+            document.querySelector("#soundwave").replaceChildren();
+            const wavesurfer = WaveSurfer.create({
+                container: '#soundwave',
+                waveColor: '#ff000099',
+                progressColor: '#660000',
+                autoplay: true,
+                hideScrollbar: false,
+                url: audiofile.dataset.fileurl,
+                mediaControls: true,
+              });
+
+              wavesurfer.on('interaction', () => {
+                wavesurfer.play();
+              });
+
+              /*wavesurfer.on('finish', () => {
+                pause.style.display = 'none';
+                play.style.display = 'block';
+                wavesurfer.setTime(0);
+              })*/
+              
+        });
+    });
+    
 });
+
 
 async function createNewDirectory(newDirectoryName) {
     //post to api to create new directory from formData
@@ -125,6 +144,11 @@ async function loadDirectoryContents(directory_pk) {
             let container = document.createElement('div');
             if(file.is_audiofile){
                 var hiddenfileIcon = document.querySelector("#audiofile-icon");
+                container.addEventListener('click', () => {
+                    let audio = document.querySelector('audio');
+                    audio.setAttribute("src", file.fileurl);
+                    audio.setAttribute("controls", "");
+                });
             }
             else {
                 var hiddenfileIcon = document.querySelector("#file-icon");

@@ -33,7 +33,6 @@ button {
     padding: 8px;
     color: white;
     font-size: large;
-    width: 300px;
     background-color: #323338;
 }
 
@@ -331,7 +330,12 @@ button {
     #soundwave {
         background-color: #1f1f1f;
         grid-area: 1 / 2 / span 1 / span 1;
+
+        display:flex;
+        justify-content: center;
+        flex-direction: column;
     }
+
 
     #chat {
         background-color: #1f1f1f;
