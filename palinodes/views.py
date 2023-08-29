@@ -12,7 +12,7 @@ from django.db import IntegrityError
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import User, Profile, Directory
+from .models import User, Profile, Directory, FileModel
 from .forms import RepositoryForm
 from .serializers import DirectorySerializer, FileSerializer
 
@@ -78,6 +78,16 @@ def new_directory_api(request):
     new_directory.save()
 
     return JsonResponse({"directory-pk": new_directory.pk})
+
+def upload_file_api(request):
+    file = request.FILES
+    parent = Directory.objects.get(pk=request.POST['parentpk'])
+    assert(False, request.FILES == None, "request.Files is null")
+
+    file_instance = FileModel.objects.create(parent=parent, file=file)
+    file_instance.save()
+
+
     
 ##################__AUTHENTICATION__################
 def login_view(request):

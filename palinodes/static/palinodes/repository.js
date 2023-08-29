@@ -59,6 +59,27 @@ async function createNewDirectory(newDirectoryName) {
 
 async function loadDirectoryContents(directory_pk) {
     document.querySelector("#contents").replaceChildren()
+    let form = document.querySelector("#file-form");
+    form.onsubmit = async () => {
+        let file = document.querySelector("#file-input");
+        let data = new FormData();
+
+        data.append('file', file.files[0]);
+        data.append('parentpk', directory_pk);
+
+
+        await fetch("/new-file", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+            },
+            body: data,
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+    };
     //get the contents from the directory with primary key directory_pk
     //create a list of elements with the directory's contents
     await fetch(`/directory/${directory_pk}`)
