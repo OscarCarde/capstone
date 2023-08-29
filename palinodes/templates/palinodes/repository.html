@@ -63,7 +63,7 @@
                     </form>
                 </div>
             </div>
-            <div id="contents">
+            <div data-pk = "{{repository.pk}}" id="contents">
                 {% for directory in repository.subdirectories.all %}
                 <div data-pk ="{{directory.pk}}" data-name = "{{directory.name}}" class="directories file-entries clickable" >
                     <svg width="30" height="23" viewBox="0 0 41 34" fill="none" xmlns="http://www.w3.org/2000/svg">

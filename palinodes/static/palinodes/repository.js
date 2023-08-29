@@ -29,38 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    document.querySelectorAll('.directories').forEach(directory => {
-        console.log(directory.dataset.pk)
-        directory.addEventListener('click', () => {
-            loadDirectoryContents(directory.dataset.pk)
-        });
-    })
-
-    document.querySelectorAll('.audiofile').forEach(audiofile => {
-        audiofile.addEventListener('click', () => {
-            document.querySelector("#soundwave").replaceChildren();
-            const wavesurfer = WaveSurfer.create({
-                container: '#soundwave',
-                waveColor: '#ff000099',
-                progressColor: '#660000',
-                autoplay: true,
-                hideScrollbar: false,
-                url: audiofile.dataset.fileurl,
-                mediaControls: true,
-              });
-
-              wavesurfer.on('interaction', () => {
-                wavesurfer.play();
-              });
-
-              /*wavesurfer.on('finish', () => {
-                pause.style.display = 'none';
-                play.style.display = 'block';
-                wavesurfer.setTime(0);
-              })*/
-              
-        });
-    });
+    let repositorypk = document.querySelector("#contents").dataset.pk;
+    loadDirectoryContents(repositorypk);
     
 });
 
@@ -145,9 +115,29 @@ async function loadDirectoryContents(directory_pk) {
             if(file.is_audiofile){
                 var hiddenfileIcon = document.querySelector("#audiofile-icon");
                 container.addEventListener('click', () => {
-                    let audio = document.querySelector('audio');
-                    audio.setAttribute("src", file.fileurl);
-                    audio.setAttribute("controls", "");
+                    document.querySelector("#soundwave").replaceChildren();
+                    const wavesurfer = WaveSurfer.create({
+                        container: '#soundwave',
+                        waveColor: '#ffffff',
+                        progressColor: '#ffffff99',
+                        autoplay: true,
+                        url: file.fileurl,
+                        mediaControls: true,
+                    });
+
+                    const topTimeline = TimelinePlugin.create({
+                        insertPosition: 'beforebegin',
+                        timeInterval: 5,
+                        style: {
+                        color: '#ffffff99',
+                        },
+                    })
+
+                    wavesurfer.registerPlugin(topTimeline);
+
+                    wavesurfer.on('interaction', () => {
+                        wavesurfer.play();
+                    });
                 });
             }
             else {

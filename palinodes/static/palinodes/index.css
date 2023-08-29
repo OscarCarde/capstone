@@ -332,10 +332,13 @@ button {
         grid-area: 1 / 2 / span 1 / span 1;
 
         display:flex;
-        justify-content: center;
         flex-direction: column;
+        justify-content: center;
     }
 
+    audio {
+        margin-top: 50px;
+    }
 
     #chat {
         background-color: #1f1f1f;
