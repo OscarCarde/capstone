@@ -38,7 +38,8 @@ document.addEventListener('DOMContentLoaded', function() {
 async function createNewDirectory(newDirectoryName) {
     //post to api to create new directory from formData
     //with the current directory as parent
-    parent_pk = document.querySelector("#parent").dataset.pk;
+    var parent_pk = document.querySelector("#parent").dataset.pk;
+
     await fetch("/new-directory", {
         method: 'POST',
         headers: {
@@ -60,13 +61,16 @@ async function createNewDirectory(newDirectoryName) {
 async function loadDirectoryContents(directory_pk) {
     document.querySelector("#contents").replaceChildren()
     let form = document.querySelector("#file-form");
-    form.onsubmit = async () => {
-        let file = document.querySelector("#file-input");
-        let data = new FormData();
+    form.onsubmit = async event => {
+        event.preventDefault();
+        var file = document.querySelector("#file-input");
+        var data = new FormData();
 
         data.append('file', file.files[0]);
+        console.log(file.files[0]);
         data.append('parentpk', directory_pk);
-
+        console.log(directory_pk);
+        console.log(data);
 
         await fetch("/new-file", {
             method: 'POST',
@@ -76,9 +80,12 @@ async function loadDirectoryContents(directory_pk) {
             body: data,
         })
         .then(response => response.json())
-        .then(data => {
-            console.log(data);
+        .then(message => {
+            console.log(message.message);
+            file.value = null;
+            loadDirectoryContents(directory_pk);
         })
+        
     };
     //get the contents from the directory with primary key directory_pk
     //create a list of elements with the directory's contents
@@ -140,21 +147,22 @@ async function loadDirectoryContents(directory_pk) {
                     const wavesurfer = WaveSurfer.create({
                         container: '#soundwave',
                         waveColor: '#ffffff',
-                        progressColor: '#ffffff99',
+                        progressColor: '#999999',
                         autoplay: true,
                         url: file.fileurl,
                         mediaControls: true,
                     });
 
-                    const topTimeline = TimelinePlugin.create({
+                    /*const topTimeline = TimelinePlugin.create({
                         insertPosition: 'beforebegin',
                         timeInterval: 5,
                         style: {
-                        color: '#ffffff99',
+                        color: '#ff5555',
                         },
                     })
 
                     wavesurfer.registerPlugin(topTimeline);
+                    */
 
                     wavesurfer.on('interaction', () => {
                         wavesurfer.play();

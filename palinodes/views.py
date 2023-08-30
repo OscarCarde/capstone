@@ -80,12 +80,22 @@ def new_directory_api(request):
     return JsonResponse({"directory-pk": new_directory.pk})
 
 def upload_file_api(request):
-    file = request.FILES
-    parent = Directory.objects.get(pk=request.POST['parentpk'])
-    assert(False, request.FILES == None, "request.Files is null")
+    try:
+        file = request.FILES.get('file')
+        parentpk = request.POST.get('parentpk')
+        print("parentpk: ", parentpk)
+        parent = Directory.objects.get(pk=int(parentpk))
+    
+        file_instance = FileModel.objects.create(parent=parent, file=file)
+        file_instance.save()
+        return JsonResponse({'message': 'File uploaded sucessfully'})
+    except Directory.DoesNotExist:
+        return JsonResponse({'message': f'Parent directory with PRIMARY KEY: {parentpk} not found'}, status=400)
+    except Exception as e:
+        print(e)
+        return JsonResponse({'message': str(e)}, status=500)
 
-    file_instance = FileModel.objects.create(parent=parent, file=file)
-    file_instance.save()
+    
 
 
     

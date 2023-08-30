@@ -111,10 +111,11 @@ class DirectoryApiTestCase(TestCase):
         subdirectories = response.json()["subdirectories"]
         self.assertListEqual([{"pk":3000, "name":"test subdir"}], subdirectories, "subdirectories don't match")
         files = response.json()["files"]
-        self.assertListEqual([{"filename": "cvt.docx", "fileurl": "/media/1000/test%20dir/cvt.docx"}], files, "files don't match")
+        self.assertDictEqual({"filename": "cvt.docx", "fileurl": "/media/1000/test%20dir/cvt.docx", "is_audiofile": False}, files[0], "files don't match")
         c.logout()
 
 class NewDirectoryApiTestCase(TestCase):
+
     def setUp(self) -> None:
         self.user = User.objects.create(id=1000, username = "Alice")
         self.dir = Directory.objects.create(pk=2000, name="test dir", owner = self.user, description="Test Directory")
@@ -127,3 +128,22 @@ class NewDirectoryApiTestCase(TestCase):
         directory = Directory.objects.get(name="test subsubdir")
         if directory:
             directory.delete()
+
+class NewFileApiTestCase(TestCase):
+    def setUp(self) -> None:
+        self.user = User.objects.create(id=1000, username = "Alice")
+        self.dir = Directory.objects.create(pk=2000, name="test dir", owner = self.user, description="Test Directory")
+        
+    
+    
+    def test_file_upload(self):
+        c = Client()
+        with open("palinodes/testFiles/codine.mp3", 'rb') as file:
+            response = c.post("/new-file", {"file": file, "parentpk": self.dir.pk})
+        self.assertEquals(200, response.status_code)
+        instance = FileModel.objects.get(parent=self.dir)
+        self.assertIsNotNone(instance, "instance not saved")
+
+        if instance:
+            instance.file.delete()
+
