@@ -10,6 +10,7 @@ urlpatterns = [
     #API urls
     path("directory/<int:pk>", views.directory_api, name="directory"),
     path("new-directory", views.new_directory_api, name="new-directory"),
+    path("new-file", views.upload_file_api, name="new-file"),
     #Login urls
     path("login", views.login_view, name="login"),
     path("register", views.register, name="register"),
