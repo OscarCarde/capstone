@@ -9,7 +9,7 @@
   - [ ] The form should appear on the same page
   - [ ] The page shouldn't reload on validation
 
-- [ ] Dashboard:
+- [x] Dashboard:
   - [x] When Logged-in, a user should be brought to their dashboard
   - [x] The Dashboard should display all the repositories that the user owns or is a collaborator on 
   - [x] Each repository should display it's title, description, owner and number of collaborators
@@ -21,19 +21,18 @@
   - [x]  Users can create new music project repository, providing a title and description.
 
 - [ ] Project View:
-  - [ ] The owner and collaborating users can create directories,
-  - [ ] they can upload files in the desired location in their repository
+  - [x] The owner and collaborating users can create directories,
+  - [x] they can upload files in the desired location in their repository,
+  - [ ] delete files 
+  - [ ] delete folders with all their contents,
+  - [ ] move their files to a different directory
   - [ ] and add multiple collaborators (musicians) (((who can be invited via email))).
   - [ ] Only the owner can remove collaborators
   - [ ] The owner can transfer ownership to another user
 
-- [ ] File Storage:
-    - [ ] The file structure of repositories looks and feels like a standard hierarchical file structure.
+- [x] File Storage:
+    - [x] The file structure of repositories looks and feels like a standard hierarchical file structure.
     - [x] The files should be stored on the server in the path "user_id/repository/" and reflect the file structure of the repository.
-
-- [ ] Version Control:
-  - [ ] Implementation of version control for music files (tracks, samples, etc.).
-  - [ ] Users can upload new versions of tracks, and previous versions are saved and accessible.
 
 - [ ] Chat:
   - [ ] The chatbox appears next to the file structure in a repository
@@ -54,10 +53,7 @@
 
 - [ ] Soundtrack
     - [ ] When clicking on an audio file, the file should play 
-    - [ ] When playing, the file should be visualized as an audio waveform with a time banner
-
-- [ ] User Profile:
-  - [ ] Display user information, profile picture, and list of owned and collaborated-on projects.
+    - [x] When playing, the file should be visualized as an audio waveform with a time banner
 
 - [ ] Notifications and Alerts:
   - [ ] Notify users about collaboration invitations, comments, and changes to projects.
