@@ -207,6 +207,8 @@ async function loadDirectoryContents(directory_pk) {
                     wavesurfer.on('interaction', () => {
                         wavesurfer.play();
                     });
+
+                    wavesurfer.play();
                 });
             }
             else {
