@@ -72,7 +72,34 @@
             </form>
         </div>
         <div id="soundwave"></div>
-        <div id="chat">
+        <div id="chat-container">
+            <div id="chat">
+                <div style="display:none;" id="comment-template" class="comment-container">
+                    <p class="commenter"></p>
+                    <p class="comment"></p>
+                    <p class="timestamp"></p>
+                </div>
+                <div style="display:none;" id="comment-template-self" class="comment-container user-comment-container">
+                    <p class="comment"></p>
+                    <p class="timestamp"></p>
+                </div>
+            </div>
+            <form id="new-comment">
+                <textarea class="bordered" type="text" name="comment" id="comment-input"></textarea>
+                <button type="submit">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_37_151)">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M3.18336 6.07704L4.76166 14.9093H14.5C15.3284 14.9093 16 15.5629 16 16.3691C16 17.1754 15.3284 17.829 14.5 17.829H4.76166L3.18336 26.6611L27.8588 16.3691L3.18336 6.07704ZM1.97749 16.3691L0.12735 6.01557C-0.0222196 5.17858 0.256064 4.32309 0.873322 3.72235C1.64889 2.96756 2.81852 2.74833 3.82666 3.16882L30.6314 14.349C31.4616 14.6953 32 15.4899 32 16.3691C32 17.2483 31.4616 18.0429 30.6314 18.3892L3.82666 29.5693C2.81852 29.99 1.64889 29.7706 0.873322 29.016C0.256064 28.4151 -0.02222 27.5596 0.12735 26.7226L1.97749 16.3691Z" fill="white"/>
+                        </g>
+                        <defs>
+                        <clipPath id="clip0_37_151">
+                        <rect width="32" height="31.1433" fill="white" transform="translate(0 0.797363)"/>
+                        </clipPath>
+                        </defs>
+                        </svg>
+                        
+                </button>
+            </form>
         </div>
     </div>
     <!---Resources-->

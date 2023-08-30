@@ -3,8 +3,11 @@ import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js
 import TimelinePlugin from 'https://unpkg.com/wavesurfer.js@7/dist/plugins/timeline.esm.js'
 
 const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+const user = document.querySelector("#loggedin-user").dataset.username;
 
 document.addEventListener('DOMContentLoaded', function() {
+
+    //NEW DIRECTORY FORM
     let newDirectory = document.querySelector("#new-directory");
     newDirectory.addEventListener('click', () => {
         //display new directory form as modal
@@ -30,10 +33,58 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     let repositorypk = document.querySelector("#contents").dataset.pk;
+    //LOAD CONTENTS
     loadDirectoryContents(repositorypk);
+
+    //LOAD CHAT
+    loadChat(repositorypk);
+
+    //NEW COMMENT
+    //TODO: Display new comment without fetch call to keep audio track loaded
+    document.querySelector("#new-comment").onsubmit = async () => {
+        var comment = document.querySelector("#comment-input").value;
+        console.log(comment);
+        await fetch("/new-comment", {
+            method: 'POST', 
+            headers: {
+                'ContentType':'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({
+                "comment": comment,
+                "repositorypk": repositorypk,
+            })
+        })
+    }
     
 });
 
+async function loadChat(repositorypk) {
+    fetch(`/repository/${repositorypk}/comments`)
+    .then(response => response.json())
+    .then(data => {
+        var container = document.querySelector("#chat");
+        var commentTemplate = document.querySelector("#comment-template");
+        var commentTemplateSelf = document.querySelector("#comment-template-self");
+
+        data.comments.forEach(comment => {
+            if(comment.username != user) {
+                var commentContainer = commentTemplate.cloneNode(true);
+                commentContainer.querySelector(".commenter").innerHTML = comment.username;
+            }
+            else {
+                var commentContainer = commentTemplateSelf.cloneNode(true);
+            }
+            commentContainer.id = "";
+            commentContainer.style.display = "flex";
+            commentContainer.querySelector(".comment").innerHTML = comment.comment;
+            commentContainer.querySelector(".timestamp").innerHTML = comment.when;
+            
+            container.prepend(commentContainer);
+            container.scrollTop = container.scrollHeight;
+        }) 
+    })
+}
 
 async function createNewDirectory(newDirectoryName) {
     //post to api to create new directory from formData

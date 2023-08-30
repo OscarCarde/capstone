@@ -9,8 +9,10 @@ urlpatterns = [
     path("repository/<int:repository_id>", views.repository_view, name="repository"),
     #API urls
     path("directory/<int:pk>", views.directory_api, name="directory"),
+    path("repository/<int:repositorypk>/comments", views.get_comments_api, name="comments"),
     path("new-directory", views.new_directory_api, name="new-directory"),
     path("new-file", views.upload_file_api, name="new-file"),
+    path("new-comment", views.new_comment, name="new-comment"),
     #Login urls
     path("login", views.login_view, name="login"),
     path("register", views.register, name="register"),

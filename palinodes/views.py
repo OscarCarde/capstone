@@ -12,9 +12,9 @@ from django.db import IntegrityError
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import User, Profile, Directory, FileModel
+from .models import User, Profile, Directory, FileModel, Comment
 from .forms import RepositoryForm
-from .serializers import DirectorySerializer, FileSerializer
+from .serializers import DirectorySerializer, FileSerializer, CommentSerializer
 
 #################__LANDING__########################
 
@@ -46,6 +46,7 @@ def repository_view(request, repository_id):
     })
 
 ##################__APIS__##########################
+@login_required
 def directory_api(request, pk):
     directory = Directory.objects.get(pk=pk)
     directory_serializer = DirectorySerializer(directory)
@@ -63,6 +64,7 @@ def directory_api(request, pk):
 
     return JsonResponse({"parent": parent_data, "current": directory_serializer.data, "subdirectories":subdirectories_serializer.data, "files": file_serializer.data})
 
+@login_required
 def new_directory_api(request):
     
     #get name and parent pk
@@ -79,6 +81,7 @@ def new_directory_api(request):
 
     return JsonResponse({"directory-pk": new_directory.pk})
 
+@login_required
 def upload_file_api(request):
     try:
         file = request.FILES.get('file')
@@ -95,10 +98,35 @@ def upload_file_api(request):
         print(e)
         return JsonResponse({'message': str(e)}, status=500)
 
-    
+@login_required
+def new_comment(request):
 
+    try:
+        raw_content = request.body
+        loaded_content = json.loads(raw_content)
 
-    
+        message = loaded_content.get("comment")
+        repositorypk = loaded_content.get("repositorypk")
+
+        repository = Directory.objects.get(pk=int(repositorypk))
+
+        comment_instance = Comment.objects.create(comment=message, repository=repository, user=request.user)
+        comment_instance.save()
+
+        return JsonResponse({'message': "comment saved successfully"})
+    except Directory.DoesNotExist:
+        return JsonResponse({'message': f'directory with PRIMARY KEY: {repositorypk} not found'}, status=400)
+    except Exception as e:
+        print(e)
+        return JsonResponse({'message': str(e)}, status=500)
+
+def get_comments_api(request, repositorypk):
+    repository = Directory.objects.get(pk=repositorypk)
+    comments = repository.comments.order_by("-timestamp")
+    comments_serializer = CommentSerializer(comments, many=True)
+
+    return JsonResponse({"comments": comments_serializer.data})
+
 ##################__AUTHENTICATION__################
 def login_view(request):
     if request.method == "POST":

@@ -34,10 +34,10 @@
     - [x] The file structure of repositories looks and feels like a standard hierarchical file structure.
     - [x] The files should be stored on the server in the path "user_id/repository/" and reflect the file structure of the repository.
 
-- [ ] Chat:
+- [ ] Comments:
   - [ ] The chatbox appears next to the file structure in a repository
   - [ ] Each chat is associated to a specific repository and is only accessed when on this repository's page
-  - [ ] Collaborators can chat in repositories
+  - [ ] Collaborators can comment in repositories
   - [ ] Messages appear timestamped with the most recent at the bottom
   - [ ] The older messages fade out at the top of the chatbox
   - [ ] Each collaborator of the repository should get notified when a message has been sent by another user

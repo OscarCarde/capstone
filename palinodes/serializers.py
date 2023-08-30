@@ -1,5 +1,19 @@
 from rest_framework import serializers
-from .models import Directory, FileModel
+from .models import Directory, FileModel, Comment
+
+class CommentSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+    when = serializers.SerializerMethodField()
+
+    def get_when(self, obj):
+        return obj.posted_since
+
+    def get_username(self, obj):
+        return obj.user.username
+
+    class Meta:
+        model= Comment
+        fields = ['username', 'comment', 'when']
 
 class RepositorySerializer(serializers.ModelSerializer):
     owner = serializers.CharField(source='owner.username', read_only=True)

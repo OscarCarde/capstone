@@ -76,5 +76,11 @@ class FileModel(models.Model):
 
 class Comment(models.Model):
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.DO_NOTHING, related_name="comments")
-    file = models.ForeignKey(FileModel, blank=True, null=True, on_delete=models.CASCADE, related_name="comments")
+    timestamp = models.DateTimeField(auto_now=True)
+    repository = models.ForeignKey(Directory, on_delete=models.CASCADE, related_name="comments")
     comment = models.TextField()
+
+    @property
+    def posted_since(self):
+        #return timesince(self.timestamp, timezone.now()) + " ago"
+        return f"{self.timestamp.strftime('%d-%m-%Y')} {self.timestamp.strftime('%H:%M')}"
