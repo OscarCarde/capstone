@@ -204,17 +204,6 @@ async function loadDirectoryContents(directory_pk) {
                         mediaControls: true,
                     });
 
-                    /*const topTimeline = TimelinePlugin.create({
-                        insertPosition: 'beforebegin',
-                        timeInterval: 5,
-                        style: {
-                        color: '#ff5555',
-                        },
-                    })
-
-                    wavesurfer.registerPlugin(topTimeline);
-                    */
-
                     wavesurfer.on('interaction', () => {
                         wavesurfer.play();
                     });
@@ -228,8 +217,13 @@ async function loadDirectoryContents(directory_pk) {
             let filename = document.createElement('p');
             filename.innerHTML = file.filename;
             container.append(fileIcon, filename);
-            container.className = "file-entries clickable";
+            container.className = "audiofile file-entries clickable";
             document.getElementById("contents").append(container);
         })
+        //LOAD FIRST AUDIO FILE IF PRESENT
+        let audiofile = document.querySelector(".audiofile");
+        if(audiofile != null) {
+            audiofile.click();
+        }
     })
 }

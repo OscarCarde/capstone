@@ -385,6 +385,9 @@ button {
                 margin: 6px 0px;
             }
 
+            .commenter {
+                font-weight: bold;
+            }
             .timestamp {
                 font-size: x-small;
                 font-style: italic;
