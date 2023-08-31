@@ -244,11 +244,12 @@ async function loadDirectoryContents(directory_pk) {
         })
         data.files.forEach(file => {
             let container = document.createElement('div');
+            var wavesurfer;
             if(file.is_audiofile){
                 var hiddenfileIcon = document.querySelector("#audiofile-icon");
                 container.addEventListener('click', () => {
                     document.querySelector("#soundwave").replaceChildren();
-                    const wavesurfer = WaveSurfer.create({
+                    wavesurfer = WaveSurfer.create({
                         container: '#soundwave',
                         waveColor: '#ffffff',
                         progressColor: '#999999',

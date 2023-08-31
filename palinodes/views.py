@@ -46,7 +46,6 @@ def repository_view(request, repository_id):
     })
 
 ##################__APIS__##########################
-@login_required
 def directory_api(request, pk):
     try:
         directory = Directory.objects.get(pk=pk)
@@ -56,7 +55,6 @@ def directory_api(request, pk):
         subdirectories_serializer = DirectorySerializer(subdirectories, many=True)
 
         files = directory.files
-        print(files.values())
         file_serializer = FileSerializer(files, many=True)
 
         #add the parent directory if there is one, otherwise, set the parent field to null
@@ -72,22 +70,28 @@ def directory_api(request, pk):
         return JsonResponse({"message": f"file with id {pk} does not exist"}, status=400)
     except Exception as e:
         return JsonResponse({"message": str(e)}, status=500)
-@login_required
-def new_directory_api(request):
     
+
+def new_directory_api(request):
     #get name and parent pk
     raw_content = request.body
     loaded_content = json.loads(raw_content)
     name = loaded_content.get("name")
     parent_pk = loaded_content.get("parent_pk")
 
-    #create new directory with parent
-    parent= Directory.objects.get(pk=parent_pk)
-    new_directory = Directory.objects.create(name= name, parent= parent, owner= parent.owner)
-    new_directory.collaborators.set(parent.collaborators.all())
-    new_directory.save()
+    try:
+        #create new directory with parent
+        parent= Directory.objects.get(pk=parent_pk)
+        new_directory = Directory.objects.create(name= name, parent= parent, owner= parent.owner)
+        new_directory.collaborators.set(parent.collaborators.all())
+        new_directory.save()
 
-    return JsonResponse({"directory-pk": new_directory.pk})
+        return JsonResponse({"message": "directory created successfully", "directory-pk": new_directory.pk}, status=200)
+    except Directory.DoesNotExist:
+        return JsonResponse({"message": f"directory with primary key {parent_pk} does not exist"}, status=400)
+    except Exception as e:
+        return JsonResponse({"message": str(e)}, status=500)
+    
 
 @login_required
 def delete_directory_api(request):
@@ -117,20 +121,18 @@ def delete_file_api(request):
     except FileModel.DoesNotExist:
         return JsonResponse({"message": f"primary key {filepk} doesn't match any existing directory"}, status=400)
     except Exception as e:
-        print(e)
         return JsonResponse({"message": str(e)}, status=500)
 
-@login_required
+
 def upload_file_api(request):
     try:
         file = request.FILES.get('file')
         parentpk = request.POST.get('parentpk')
-        print("parentpk: ", parentpk)
         parent = Directory.objects.get(pk=int(parentpk))
     
         file_instance = FileModel.objects.create(parent=parent, file=file)
         file_instance.save()
-        return JsonResponse({'message': 'File uploaded sucessfully'})
+        return JsonResponse({'message': 'File uploaded sucessfully'}, status=200)
     except Directory.DoesNotExist:
         return JsonResponse({'message': f'Parent directory with PRIMARY KEY: {parentpk} not found'}, status=400)
     except Exception as e:

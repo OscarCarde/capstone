@@ -30,7 +30,7 @@ def get_file_upload_path(instance, filename):
 class Directory(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=300, blank=True, null=True)
-    created = models.DateField(auto_now=True)
+    created = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="directories")
     collaborators = models.ManyToManyField(User, blank=True, related_name="collaborating")
     parent = models.ForeignKey("self", blank=True, null=True, on_delete=models.CASCADE, related_name="subdirectories")
@@ -51,6 +51,18 @@ class Directory(models.Model):
     def is_repository(self):
         return self.parent == None
     
+    @property
+    def last_edited(self):
+        latests = []
+        last_directory_timestamp = self.subdirectories.latest("created")
+        latests = latests + [last_directory_timestamp.created] if last_directory_timestamp else []
+        last_file_timestamp = self.files.latest("uploaded")
+        latests = latests + [last_file_timestamp.uploaded] if last_file_timestamp else []
+        last_comment_timestamp = self.comments.latest("timestamp")
+        latests = latests + [last_comment_timestamp.timestamp] if last_comment_timestamp else []
+
+        return min(latests)
+    
     def __str__(self):
         return f"REPOSITORY: {self.name}" if self.is_repository else self.name
 
@@ -58,6 +70,7 @@ class Directory(models.Model):
 class FileModel(models.Model):
     parent = models.ForeignKey(Directory, on_delete=models.CASCADE, related_name="files")
     file = models.FileField(upload_to=get_file_upload_path)
+    uploaded = models.DateTimeField(auto_now=True)
 
     @property
     def filename(self):
