@@ -48,22 +48,30 @@ def repository_view(request, repository_id):
 ##################__APIS__##########################
 @login_required
 def directory_api(request, pk):
-    directory = Directory.objects.get(pk=pk)
-    directory_serializer = DirectorySerializer(directory)
-    
-    subdirectories = directory.subdirectories
-    subdirectories_serializer = DirectorySerializer(subdirectories, many=True)
+    try:
+        directory = Directory.objects.get(pk=pk)
+        directory_serializer = DirectorySerializer(directory)
+        
+        subdirectories = directory.subdirectories
+        subdirectories_serializer = DirectorySerializer(subdirectories, many=True)
 
-    files = directory.files
-    file_serializer = FileSerializer(files, many=True)
+        files = directory.files
+        print(files.values())
+        file_serializer = FileSerializer(files, many=True)
 
-    #add the parent directory if there is one, otherwise, set the parent field to null
-    parent = directory.parent
-    parent_serializer = DirectorySerializer(parent) if parent else None
-    parent_data = parent_serializer.data if parent_serializer else None
+        #add the parent directory if there is one, otherwise, set the parent field to null
+        parent = directory.parent
+        parent_serializer = DirectorySerializer(parent) if parent else None
+        parent_data = parent_serializer.data if parent_serializer else None
 
-    return JsonResponse({"parent": parent_data, "current": directory_serializer.data, "subdirectories":subdirectories_serializer.data, "files": file_serializer.data})
+        return JsonResponse({"parent": parent_data, "current": directory_serializer.data, "subdirectories":subdirectories_serializer.data, "files": file_serializer.data})
 
+    except Directory.DoesNotExist:
+        return JsonResponse({"message": f"directory with id {pk} does not exist"}, status=400)
+    except FileModel.DoesNotExist:
+        return JsonResponse({"message": f"file with id {pk} does not exist"}, status=400)
+    except Exception as e:
+        return JsonResponse({"message": str(e)}, status=500)
 @login_required
 def new_directory_api(request):
     
@@ -80,6 +88,37 @@ def new_directory_api(request):
     new_directory.save()
 
     return JsonResponse({"directory-pk": new_directory.pk})
+
+@login_required
+def delete_directory_api(request):
+    raw_content = request.body
+    loaded_content = json.loads(raw_content)
+    directorypk = loaded_content.get("directorypk")
+
+    try:
+        directory = Directory.objects.get(pk=directorypk)
+        directory.delete()
+        return JsonResponse({"message": "directory deleted successfully"})
+    except Directory.DoesNotExist:
+        return JsonResponse({"message": f"primary key {directorypk} doesn't match any existing directory"}, status=400)
+    except Exception as e:
+        return JsonResponse({"message": str(e)}, status=500)
+
+@login_required
+def delete_file_api(request):
+    raw_content = request.body
+    loaded_content = json.loads(raw_content)
+    filepk = loaded_content.get("filepk")
+
+    try:
+        file = FileModel.objects.get(pk=filepk)
+        file.delete()
+        return JsonResponse({"message": "file deleted successfully"})
+    except FileModel.DoesNotExist:
+        return JsonResponse({"message": f"primary key {filepk} doesn't match any existing directory"}, status=400)
+    except Exception as e:
+        print(e)
+        return JsonResponse({"message": str(e)}, status=500)
 
 @login_required
 def upload_file_api(request):

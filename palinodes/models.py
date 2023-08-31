@@ -68,10 +68,17 @@ class FileModel(models.Model):
         extension3 = self.filename[-3:]
         extension4 = self.filename[-4:]
         return extension3 in ["mp3", "wav", "aac", "m4a", 'aif'] or extension4 in ["flac", "aiff"]
-    
+
     def __str__(self):
         return self.filename
     
+    def delete(self, *args, **kwargs):
+        """
+        Deletes the associated file and then the model instance.
+        """
+        if self.file:
+            self.file.delete()
+        super(FileModel, self).delete(*args, **kwargs)
 ###############################################
 
 class Comment(models.Model):

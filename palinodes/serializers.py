@@ -48,4 +48,4 @@ class FileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model=FileModel
-        fields = ['filename', 'fileurl', 'is_audiofile']
+        fields = ['pk', 'filename', 'fileurl', 'is_audiofile']

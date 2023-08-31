@@ -59,6 +59,39 @@ document.addEventListener('DOMContentLoaded', function() {
     
 });
 
+async function deleteDirectory(pk) {
+    fetch("/delete-directory", {
+        method: 'POST',
+        headers: {
+            'ContentType': "application/json",
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({
+            'directorypk': pk,
+        })
+
+    })
+}
+
+async function deleteFile(pk) {
+    await fetch("/delete-file", {
+        method: 'POST',
+        headers: {
+            'ContentType': "application/json",
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({
+            'filepk': pk,
+        })
+        
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message);  
+    })
+    
+}
+
 async function loadChat(repositorypk) {
     fetch(`/repository/${repositorypk}/comments`)
     .then(response => response.json())
@@ -110,7 +143,10 @@ async function createNewDirectory(newDirectoryName) {
 }
 
 async function loadDirectoryContents(directory_pk) {
-    document.querySelector("#contents").replaceChildren()
+    document.querySelector("#contents").replaceChildren();
+    var deleteBtnTemplate = document.querySelector("#delete-btn-template");
+
+    //FILE UPLOAD FORM HANDLING
     let form = document.querySelector("#file-form");
     form.onsubmit = async event => {
         event.preventDefault();
@@ -138,6 +174,7 @@ async function loadDirectoryContents(directory_pk) {
         })
         
     };
+
     //get the contents from the directory with primary key directory_pk
     //create a list of elements with the directory's contents
     await fetch(`/directory/${directory_pk}`)
@@ -176,18 +213,34 @@ async function loadDirectoryContents(directory_pk) {
             //add the link to the parent directory
             //add each subdirectory in the current directory to the file structure in the DOM
             let container = document.createElement('div');
+
+            //FOLDER ICON
             let hiddenfolderIcon = document.querySelector("#folder-icon");
             let folderIcon = hiddenfolderIcon.cloneNode(true);
             folderIcon.style.display = "block";
+
+            //DELETE FOLDER BUTTON
+            let deleteBtn = deleteBtnTemplate.cloneNode(true);
+            deleteBtn.id = "";
+            deleteBtn.style.display = "block";
+            deleteBtn.onclick = () => {
+                deleteDirectory(subdirectory.pk);
+            }
+
+
             let directory = document.createElement('p');
             directory.innerHTML = subdirectory.name;
-            container.append(folderIcon, directory);
+            container.append(folderIcon, directory, deleteBtn);
             container.setAttribute("data-pk", subdirectory.pk);
             container.className = "directories file-entries clickable";
             container.addEventListener('click', () => {
                 loadDirectoryContents(container.dataset.pk)
             });
+
             document.getElementById("contents").append(container);
+            
+            
+
         })
         data.files.forEach(file => {
             let container = document.createElement('div');
@@ -216,9 +269,19 @@ async function loadDirectoryContents(directory_pk) {
             }
             let fileIcon = hiddenfileIcon.cloneNode(true);
             fileIcon.style.display = "block";
+
+            //DELETE FOLDER BUTTON
+            let deleteBtn = deleteBtnTemplate.cloneNode(true);
+            deleteBtn.id = "";
+            deleteBtn.style.display = "block";
+            deleteBtn.onclick = () => {
+                container.remove();
+                deleteFile(file.pk);
+            }
+
             let filename = document.createElement('p');
             filename.innerHTML = file.filename;
-            container.append(fileIcon, filename);
+            container.append(fileIcon, filename, deleteBtn);
             container.className = "audiofile file-entries clickable";
             document.getElementById("contents").append(container);
         })
