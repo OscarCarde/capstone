@@ -4,7 +4,8 @@ body {
     text-decoration: none;
     font-family:sans-serif;
     width: 100vw;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
 }
 
 * {
@@ -83,16 +84,21 @@ button {
         }
 
 #body-block {
+    overflow: hidden;
+    margin:0px;
     display: grid;
-    min-height: 100vh;
+    height:100%;
     width: 100vw;
     grid-template-columns: 2fr 4fr 1fr;
+    overflow: hidden;
 }
     #profile-banner {
+        background-color: #1d1d1d;
         grid-column: 1 / span 1;
-        margin-top: 150px;
+        margin-top: 0px;
         display: flex;
         flex-direction: column;
+        justify-content: center;
         align-items: center;
     }
         #avatar {
@@ -225,7 +231,7 @@ button {
 #repository-container {
     grid-column: 1 / span 3;
     display: grid;
-    grid-template-rows: 3fr 5fr;
+    grid-template-rows: 30vh 65vh;
     grid-template-columns: 3fr 5fr;
 }
     #repository-details {
@@ -317,6 +323,13 @@ button {
                 width:fit-content;
             }
 
+        .delete-btn {
+            z-index: 1;
+            margin: 0px;
+            background-color: transparent;
+            margin-left: auto;
+        }
+
         .file-entries {
             display: flex;
             align-items: center;
@@ -340,9 +353,78 @@ button {
         margin-top: 50px;
     }
 
-    #chat {
+    #chat-container {
         background-color: #1f1f1f;
         grid-area: 2 / 2 / span 1 / span 1;
+
+        height: 100%;
+        padding: 10px 100px 10px 100px;
+        display: flex;
+        flex-direction: column;
+        overflow-y: scroll;
     }
 
-    
+    #chat {
+        height: 48vh;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        overflow-y: scroll;
+    }
+
+        .comment-container {
+            
+            margin: 20px;
+            padding: 0px 10px 5px 10px;
+            background-color: #313338;
+            max-width: 50%;
+            border-radius: 10px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .user-comment-container {
+            background-color: black;
+            align-self: flex-end;
+        }
+
+            .comment-container * {
+                margin: 6px 0px;
+            }
+
+            .commenter {
+                font-weight: bold;
+            }
+            .timestamp {
+                font-size: x-small;
+                font-style: italic;
+                align-self: flex-end;
+            }
+
+        #chat-container form {
+            margin-top: 20px;
+            align-self: stretch;
+
+            display: flex;
+            align-items: center;
+            bottom: 0;
+        }
+
+            button[type="submit"] {
+                margin: 0px;
+                background-color: #1f1f1f;
+            }
+
+            #comment-input {
+                color: white;
+                font-size: medium;
+                width: 80%;
+                background-color: black;
+                min-height: 40px;
+
+                display: flex;
+                flex-wrap: wrap;
+                overflow: visible;
+            }

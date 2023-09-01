@@ -3,15 +3,26 @@ from .models import *
 from .serializers import *
 
 from django.core.files import File
+from datetime import datetime, timedelta, timezone
 
 class DirectoryTestCase(TestCase):
 
     def setUp(self):
+        self.time = datetime.now(timezone.utc)
+
         self.user1 = User.objects.create(id=1000, username = "Alice")
-        self.repo = Directory.objects.create(name="repo", owner = self.user1, description="a Test Repository")
-        self.dir1 = Directory.objects.create(name = "dir1", owner = self.user1, parent = self.repo)
-        self.dir2 = Directory.objects.create(name = "dir11", owner = self.user1, parent = self.dir1)
-        self.dir3 = Directory.objects.create(name = "dir111", owner = self.user1, parent = self.dir2)
+
+        self.repo = Directory.objects.create(name="repo", owner = self.user1, description="a Test Repository", created= datetime.now(timezone.utc) - timedelta(3))
+
+        self.dir1 = Directory.objects.create(name = "dir1", owner = self.user1, parent = self.repo, created = datetime.now(timezone.utc) - timedelta(days=2))
+        self.dir2 = Directory.objects.create(name = "dir11", owner = self.user1, parent = self.dir1, created= datetime.now(timezone.utc) - timedelta(days=2))
+        self.dir3 = Directory.objects.create(name = "dir111", owner = self.user1, parent = self.dir2, created= datetime.now(timezone.utc) - timedelta(days=2))
+
+        with open("palinodes/testFiles/codine.mp3", 'rb') as file:
+            self.file = FileModel(parent=self.repo, uploaded= datetime.now() - timedelta(days=2))
+            self.file.file.save('codine.mp3', File(file))
+
+        self.comment = Comment.objects.create(user=self.user1, repository=self.repo, comment="Test comment", timestamp=self.time)
 
     def test_is_repository(self):
         self.assertEquals(True, self.repo.is_repository)
@@ -23,7 +34,18 @@ class DirectoryTestCase(TestCase):
         self.assertEquals(f"1000/{self.repo.name}/dir1/dir11", path2)
         path3 = self.dir3.path
         self.assertEquals(f"1000/{self.repo.name}/dir1/dir11/dir111", path3)
-    
+
+    def test_last_edited(self):
+        #check for last edited for file at repository level
+        tolerance = timedelta(minutes=1)
+        self.assertAlmostEqual(self.time, self.repo.last_edited, delta=tolerance, msg="last_edited property failed at repository level")
+        #check for last edited for file at subdirectory level
+        now = datetime.now(timezone.utc)
+        self.comment2 = Comment.objects.create(user=self.user1, repository=self.dir1, comment="Test comment 2", timestamp=now)
+        self.repo.refresh_from_db()
+        self.assertAlmostEqual(now, self.repo.last_edited, delta=tolerance, msg="last_edited property failed at subdirectory level")
+
+
 class FileTestCase(TestCase):
     '''
         Text fixture for File model
@@ -78,27 +100,38 @@ class ProfileTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(id=1000, username = "Alice")
         self.profile = Profile.objects.create(user=self.user, description="A test user profile")
-        self.repo1 = Directory.objects.create(pk=1000, name="test repo1", owner = self.user, description="1 Test Repository")
-        self.repo2 = Directory.objects.create(pk=2000, name="test repo2", owner = self.user, description="2 Test Repository")
-        self.repo3 = Directory.objects.create(pk=3000, name="test repo3", owner = self.user, description="3 Test Repository")
+
+        self.repo1 = Directory.objects.create(pk=1000, name="test repo1", owner = self.user, description="1 Test Repository", created= datetime.now(timezone.utc) - timedelta(days=1))
+
+        self.repo2 = Directory.objects.create(pk=2000, name="test repo2", owner = self.user, description="2 Test Repository", created= datetime.now(timezone.utc) - timedelta(days=2))
+
+        self.repo3 = Directory.objects.create(pk=3000, name="test repo3", owner = self.user, description="3 Test Repository", created= datetime.now(timezone.utc) - timedelta(days=3))
+
+        self.dir1 = Directory.objects.create(pk=4000, parent=self.repo2, name="test dir1", owner = self.user, description="1 Test Repository", created= datetime.now(timezone.utc))
+
 
     def test_repositories(self):
-        actual_repositories = self.profile.repositories.values_list('pk', flat=True)
-        self.assertListEqual([1000, 2000, 3000], list(actual_repositories), "the profile's repositories don't match")
 
-        pk = 1000
-        for repository in self.profile.repositories:
-            self.assertEquals(pk, repository.pk, "repository doesn't match")
-            pk += 1000
+        actual_repositories = [repository.pk for repository in self.profile.repositories]
+        print(actual_repositories)
+        self.assertListEqual([2000, 1000, 3000], actual_repositories, "the profile's repositories don't match")
+
+    def test_collaborating_repositories(self):
+        self.profile.refresh_from_db()
+
+        actual_repositories = [repository.pk for repository in self.profile.all_repositories]
+        print(actual_repositories)
+        self.assertListEqual([2000, 1000, 3000], actual_repositories, "the profile's repositories don't match")
+
 
 class DirectoryApiTestCase(TestCase):
     '''tests for the directory_api in views.py'''
     def setUp(self):
-        self.user = User.objects.create(id=1000, username = "Alice")
+        self.user = User.objects.create(id=1000, username = "Alice", password="1234")
         self.dir = Directory.objects.create(pk=2000, name="test dir", owner = self.user, description="Test Directory")
         self.dir1 = Directory.objects.create(pk=3000, name="test subdir", owner = self.user, parent=self.dir)
         with open("palinodes/testFiles/cvt.docx", 'rb') as file:
-            self.file = FileModel(parent=self.dir)
+            self.file = FileModel(pk=1000, parent=self.dir)
             self.file.file.save('cvt.docx', File(file))
 
     def tearDown(self):
@@ -107,43 +140,46 @@ class DirectoryApiTestCase(TestCase):
 
     def test_api_endpoint(self):
         c = Client()
+        c.login(username= self.user.username, password="1234")
         response = c.get(f"/directory/{self.dir.pk}")
         subdirectories = response.json()["subdirectories"]
         self.assertListEqual([{"pk":3000, "name":"test subdir"}], subdirectories, "subdirectories don't match")
         files = response.json()["files"]
-        self.assertDictEqual({"filename": "cvt.docx", "fileurl": "/media/1000/test%20dir/cvt.docx", "is_audiofile": False}, files[0], "files don't match")
+        self.assertDictEqual({"pk": 1000, "filename": "cvt.docx", "fileurl": "/media/1000/test%20dir/cvt.docx", "is_audiofile": False}, files[0], "files don't match")
         c.logout()
 
 class NewDirectoryApiTestCase(TestCase):
 
     def setUp(self) -> None:
-        self.user = User.objects.create(id=1000, username = "Alice")
+        self.user = User.objects.create(id=1000, username = "Alice", email="alice@alice.com", password="1234")
         self.dir = Directory.objects.create(pk=2000, name="test dir", owner = self.user, description="Test Directory")
         self.dir1 = Directory.objects.create(pk=3000, name="test subdir", owner = self.user, parent=self.dir)
         
     def test_new_directory(self):
         c = Client()
+        c.login(username= self.user.username, password="1234")
         response = c.post("/new-directory", {"name": "test subsubdir", "parent_pk": self.dir1.pk}, content_type="application/json")
         self.assertEquals(200, response.status_code)
         directory = Directory.objects.get(name="test subsubdir")
         if directory:
             directory.delete()
+        c.logout()
 
 class NewFileApiTestCase(TestCase):
     def setUp(self) -> None:
-        self.user = User.objects.create(id=1000, username = "Alice")
+        self.user = User.objects.create(id=1000, username = "Alice", password="1234")
         self.dir = Directory.objects.create(pk=2000, name="test dir", owner = self.user, description="Test Directory")
         
     
     
     def test_file_upload(self):
         c = Client()
+        c.login(username="Alice", password="1234")
         with open("palinodes/testFiles/codine.mp3", 'rb') as file:
             response = c.post("/new-file", {"file": file, "parentpk": self.dir.pk})
         self.assertEquals(200, response.status_code)
         instance = FileModel.objects.get(parent=self.dir)
         self.assertIsNotNone(instance, "instance not saved")
-
         if instance:
-            instance.file.delete()
-
+            instance.delete()
+        c.logout()

@@ -3,8 +3,11 @@ import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js
 import TimelinePlugin from 'https://unpkg.com/wavesurfer.js@7/dist/plugins/timeline.esm.js'
 
 const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+const user = document.querySelector("#loggedin-user").dataset.username;
 
 document.addEventListener('DOMContentLoaded', function() {
+
+    //NEW DIRECTORY FORM
     let newDirectory = document.querySelector("#new-directory");
     newDirectory.addEventListener('click', () => {
         //display new directory form as modal
@@ -30,10 +33,91 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     let repositorypk = document.querySelector("#contents").dataset.pk;
+    //LOAD CONTENTS
     loadDirectoryContents(repositorypk);
+
+    //LOAD CHAT
+    loadChat(repositorypk);
+
+    //NEW COMMENT
+    //TODO: Display new comment without fetch call to keep audio track loaded
+    document.querySelector("#new-comment").onsubmit = async () => {
+        var comment = document.querySelector("#comment-input").value;
+        console.log(comment);
+        await fetch("/new-comment", {
+            method: 'POST', 
+            headers: {
+                'ContentType':'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({
+                "comment": comment,
+                "repositorypk": repositorypk,
+            })
+        })
+    }
     
 });
 
+async function deleteDirectory(pk) {
+    fetch("/delete-directory", {
+        method: 'POST',
+        headers: {
+            'ContentType': "application/json",
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({
+            'directorypk': pk,
+        })
+
+    })
+}
+
+async function deleteFile(pk) {
+    await fetch("/delete-file", {
+        method: 'POST',
+        headers: {
+            'ContentType': "application/json",
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({
+            'filepk': pk,
+        })
+        
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message);  
+    })
+    
+}
+
+async function loadChat(repositorypk) {
+    fetch(`/repository/${repositorypk}/comments`)
+    .then(response => response.json())
+    .then(data => {
+        var container = document.querySelector("#chat");
+        var commentTemplate = document.querySelector("#comment-template");
+        var commentTemplateSelf = document.querySelector("#comment-template-self");
+
+        data.comments.forEach(comment => {
+            if(comment.username != user) {
+                var commentContainer = commentTemplate.cloneNode(true);
+                commentContainer.querySelector(".commenter").innerHTML = comment.username;
+            }
+            else {
+                var commentContainer = commentTemplateSelf.cloneNode(true);
+            }
+            commentContainer.id = "";
+            commentContainer.style.display = "flex";
+            commentContainer.querySelector(".comment").innerHTML = comment.comment;
+            commentContainer.querySelector(".timestamp").innerHTML = comment.when;
+            
+            container.prepend(commentContainer);
+            container.scrollTop = container.scrollHeight;
+        }) 
+    })
+}
 
 async function createNewDirectory(newDirectoryName) {
     //post to api to create new directory from formData
@@ -59,7 +143,10 @@ async function createNewDirectory(newDirectoryName) {
 }
 
 async function loadDirectoryContents(directory_pk) {
-    document.querySelector("#contents").replaceChildren()
+    document.querySelector("#contents").replaceChildren();
+    var deleteBtnTemplate = document.querySelector("#delete-btn-template");
+
+    //FILE UPLOAD FORM HANDLING
     let form = document.querySelector("#file-form");
     form.onsubmit = async event => {
         event.preventDefault();
@@ -87,6 +174,7 @@ async function loadDirectoryContents(directory_pk) {
         })
         
     };
+
     //get the contents from the directory with primary key directory_pk
     //create a list of elements with the directory's contents
     await fetch(`/directory/${directory_pk}`)
@@ -125,26 +213,43 @@ async function loadDirectoryContents(directory_pk) {
             //add the link to the parent directory
             //add each subdirectory in the current directory to the file structure in the DOM
             let container = document.createElement('div');
+
+            //FOLDER ICON
             let hiddenfolderIcon = document.querySelector("#folder-icon");
             let folderIcon = hiddenfolderIcon.cloneNode(true);
             folderIcon.style.display = "block";
+
+            //DELETE FOLDER BUTTON
+            let deleteBtn = deleteBtnTemplate.cloneNode(true);
+            deleteBtn.id = "";
+            deleteBtn.style.display = "block";
+            deleteBtn.onclick = () => {
+                deleteDirectory(subdirectory.pk);
+            }
+
+
             let directory = document.createElement('p');
             directory.innerHTML = subdirectory.name;
-            container.append(folderIcon, directory);
+            container.append(folderIcon, directory, deleteBtn);
             container.setAttribute("data-pk", subdirectory.pk);
             container.className = "directories file-entries clickable";
             container.addEventListener('click', () => {
                 loadDirectoryContents(container.dataset.pk)
             });
+
             document.getElementById("contents").append(container);
+            
+            
+
         })
         data.files.forEach(file => {
             let container = document.createElement('div');
+            var wavesurfer;
             if(file.is_audiofile){
                 var hiddenfileIcon = document.querySelector("#audiofile-icon");
                 container.addEventListener('click', () => {
                     document.querySelector("#soundwave").replaceChildren();
-                    const wavesurfer = WaveSurfer.create({
+                    wavesurfer = WaveSurfer.create({
                         container: '#soundwave',
                         waveColor: '#ffffff',
                         progressColor: '#999999',
@@ -153,20 +258,11 @@ async function loadDirectoryContents(directory_pk) {
                         mediaControls: true,
                     });
 
-                    /*const topTimeline = TimelinePlugin.create({
-                        insertPosition: 'beforebegin',
-                        timeInterval: 5,
-                        style: {
-                        color: '#ff5555',
-                        },
-                    })
-
-                    wavesurfer.registerPlugin(topTimeline);
-                    */
-
                     wavesurfer.on('interaction', () => {
                         wavesurfer.play();
                     });
+
+                    wavesurfer.play();
                 });
             }
             else {
@@ -174,11 +270,26 @@ async function loadDirectoryContents(directory_pk) {
             }
             let fileIcon = hiddenfileIcon.cloneNode(true);
             fileIcon.style.display = "block";
+
+            //DELETE FOLDER BUTTON
+            let deleteBtn = deleteBtnTemplate.cloneNode(true);
+            deleteBtn.id = "";
+            deleteBtn.style.display = "block";
+            deleteBtn.onclick = () => {
+                container.remove();
+                deleteFile(file.pk);
+            }
+
             let filename = document.createElement('p');
             filename.innerHTML = file.filename;
-            container.append(fileIcon, filename);
-            container.className = "file-entries clickable";
+            container.append(fileIcon, filename, deleteBtn);
+            container.className = "audiofile file-entries clickable";
             document.getElementById("contents").append(container);
         })
+        //LOAD FIRST AUDIO FILE IF PRESENT
+        let audiofile = document.querySelector(".audiofile");
+        if(audiofile != null) {
+            audiofile.click();
+        }
     })
 }
