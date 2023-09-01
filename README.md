@@ -7,6 +7,7 @@
 - [x] Dashboard:
   - [x] When Logged-in, a user should be brought to their dashboard
   - [x] The Dashboard should display all the repositories that the user owns or is a collaborator on 
+  - [x] The user should be able to view its most recent repositories, owned and collaborated on separately on the same page
   - [x] Each repository should display it's title, description, owner and number of collaborators
   - [x] When clicking on a repository, the user should be directed to the page for that repository
     
@@ -36,8 +37,8 @@
 - [ ] Project View:
   - [x] The owner and collaborating users can create directories,
   - [x] they can upload files in the desired location in their repository,
-  - [ ] delete files 
-  - [ ] delete folders with all their contents,
+  - [x] delete files 
+  - [x] delete folders with all their contents,
   - [ ] move their files to a different directory
   - [ ] and add multiple collaborators (musicians) (((who can be invited via email))).
   - [ ] Only the owner can remove collaborators
