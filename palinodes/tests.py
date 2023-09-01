@@ -3,23 +3,23 @@ from .models import *
 from .serializers import *
 
 from django.core.files import File
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 class DirectoryTestCase(TestCase):
 
     def setUp(self):
-        self.time = datetime.now()
+        self.time = datetime.now(timezone.utc)
 
         self.user1 = User.objects.create(id=1000, username = "Alice")
 
-        self.repo = Directory.objects.create(name="repo", owner = self.user1, description="a Test Repository", created= datetime.now() - timedelta(days=2))
+        self.repo = Directory.objects.create(name="repo", owner = self.user1, description="a Test Repository", created= datetime.now(timezone.utc) - timedelta(3))
 
-        self.dir1 = Directory.objects.create(name = "dir1", owner = self.user1, parent = self.repo, created= datetime.now() - timedelta(days=1))
-        self.dir2 = Directory.objects.create(name = "dir11", owner = self.user1, parent = self.dir1, created= datetime.now() - timedelta(days=1))
-        self.dir3 = Directory.objects.create(name = "dir111", owner = self.user1, parent = self.dir2, created= datetime.now() - timedelta(days=1))
+        self.dir1 = Directory.objects.create(name = "dir1", owner = self.user1, parent = self.repo, created = datetime.now(timezone.utc) - timedelta(days=2))
+        self.dir2 = Directory.objects.create(name = "dir11", owner = self.user1, parent = self.dir1, created= datetime.now(timezone.utc) - timedelta(days=2))
+        self.dir3 = Directory.objects.create(name = "dir111", owner = self.user1, parent = self.dir2, created= datetime.now(timezone.utc) - timedelta(days=2))
 
         with open("palinodes/testFiles/codine.mp3", 'rb') as file:
-            self.file = FileModel(parent=self.repo, uploaded= datetime.now() - timedelta(days=1))
+            self.file = FileModel(parent=self.repo, uploaded= datetime.now() - timedelta(days=2))
             self.file.file.save('codine.mp3', File(file))
 
         self.comment = Comment.objects.create(user=self.user1, repository=self.repo, comment="Test comment", timestamp=self.time)
@@ -36,8 +36,16 @@ class DirectoryTestCase(TestCase):
         self.assertEquals(f"1000/{self.repo.name}/dir1/dir11/dir111", path3)
 
     def test_last_edited(self):
-        self.assertEquals(self.time, self.repo.last_edited, "last_edited property failed")
-    
+        #check for last edited for file at repository level
+        tolerance = timedelta(minutes=1)
+        self.assertAlmostEqual(self.time, self.repo.last_edited, delta=tolerance, msg="last_edited property failed at repository level")
+        #check for last edited for file at subdirectory level
+        now = datetime.now(timezone.utc)
+        self.comment2 = Comment.objects.create(user=self.user1, repository=self.dir1, comment="Test comment 2", timestamp=now)
+        self.repo.refresh_from_db()
+        self.assertAlmostEqual(now, self.repo.last_edited, delta=tolerance, msg="last_edited property failed at subdirectory level")
+
+
 class FileTestCase(TestCase):
     '''
         Text fixture for File model
@@ -92,18 +100,29 @@ class ProfileTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(id=1000, username = "Alice")
         self.profile = Profile.objects.create(user=self.user, description="A test user profile")
-        self.repo1 = Directory.objects.create(pk=1000, name="test repo1", owner = self.user, description="1 Test Repository")
-        self.repo2 = Directory.objects.create(pk=2000, name="test repo2", owner = self.user, description="2 Test Repository")
-        self.repo3 = Directory.objects.create(pk=3000, name="test repo3", owner = self.user, description="3 Test Repository")
+
+        self.repo1 = Directory.objects.create(pk=1000, name="test repo1", owner = self.user, description="1 Test Repository", created= datetime.now(timezone.utc) - timedelta(days=1))
+
+        self.repo2 = Directory.objects.create(pk=2000, name="test repo2", owner = self.user, description="2 Test Repository", created= datetime.now(timezone.utc) - timedelta(days=2))
+
+        self.repo3 = Directory.objects.create(pk=3000, name="test repo3", owner = self.user, description="3 Test Repository", created= datetime.now(timezone.utc) - timedelta(days=3))
+
+        self.dir1 = Directory.objects.create(pk=4000, parent=self.repo2, name="test dir1", owner = self.user, description="1 Test Repository", created= datetime.now(timezone.utc))
+
 
     def test_repositories(self):
-        actual_repositories = self.profile.repositories.values_list('pk', flat=True)
-        self.assertListEqual([1000, 2000, 3000], list(actual_repositories), "the profile's repositories don't match")
 
-        pk = 1000
-        for repository in self.profile.repositories:
-            self.assertEquals(pk, repository.pk, "repository doesn't match")
-            pk += 1000
+        actual_repositories = [repository.pk for repository in self.profile.repositories]
+        print(actual_repositories)
+        self.assertListEqual([2000, 1000, 3000], actual_repositories, "the profile's repositories don't match")
+
+    def test_collaborating_repositories(self):
+        self.profile.refresh_from_db()
+
+        actual_repositories = [repository.pk for repository in self.profile.all_repositories]
+        print(actual_repositories)
+        self.assertListEqual([2000, 1000, 3000], actual_repositories, "the profile's repositories don't match")
+
 
 class DirectoryApiTestCase(TestCase):
     '''tests for the directory_api in views.py'''

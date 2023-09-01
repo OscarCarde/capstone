@@ -2,6 +2,9 @@ import os
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils.functional import cached_property
+
+from datetime import datetime, timezone
 
 class User(AbstractUser):
     pass
@@ -13,10 +16,24 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     description = models.TextField(default="", max_length=300, blank=True)
     avatar = models.ImageField(upload_to=get_avatar_path, blank=True)
-
+        
     @property
+    def all_repositories(self):
+        directories = set(self.user.directories.filter(parent = None)) | set(self.user.collaborating.filter(parent = None))
+        sorted_directories = sorted(directories, key=lambda directory: directory.last_edited, reverse=True)
+        return sorted_directories
+
+    @cached_property
     def repositories(self):
-        return Directory.objects.filter(owner=self.user, parent = None)
+        directories = self.user.directories.filter(parent = None)
+        sorted_directories = sorted(directories, key=lambda directory: directory.last_edited, reverse=True)
+        return sorted_directories
+    
+    @cached_property
+    def collaborating_repositories(self):
+        directories = self.user.collaborating.filter(parent = None)
+        sorted_directories = sorted(directories, key=lambda directory: directory.last_edited, reverse=True)
+        return sorted_directories
 
     def __str__(self):
         return self.user.username
@@ -30,7 +47,7 @@ def get_file_upload_path(instance, filename):
 class Directory(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=300, blank=True, null=True)
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="directories")
     collaborators = models.ManyToManyField(User, blank=True, related_name="collaborating")
     parent = models.ForeignKey("self", blank=True, null=True, on_delete=models.CASCADE, related_name="subdirectories")
@@ -52,16 +69,25 @@ class Directory(models.Model):
         return self.parent == None
     
     @property
-    def last_edited(self):
+    def last_edited(self)-> datetime:
+        #use recursion to find the latest child edited
         latests = []
-        last_directory_timestamp = self.subdirectories.latest("created")
-        latests = latests + [last_directory_timestamp.created] if last_directory_timestamp else []
-        last_file_timestamp = self.files.latest("uploaded")
-        latests = latests + [last_file_timestamp.uploaded] if last_file_timestamp else []
-        last_comment_timestamp = self.comments.latest("timestamp")
-        latests = latests + [last_comment_timestamp.timestamp] if last_comment_timestamp else []
+        if self.files.exists():
+            last_file_timestamp = self.files.latest("uploaded")
+            latests = latests + [last_file_timestamp.uploaded]
 
-        return min(latests)
+        if self.comments.exists():
+            last_comment_timestamp = self.comments.latest("timestamp")
+            latests = latests + [last_comment_timestamp.timestamp]
+
+        #BASE CASE: no subdirectories, return the date of the most recent file or comment
+        if not self.subdirectories.exists() and len(latests) > 0:
+             return max(latests)
+        
+        for subdirectory in self.subdirectories.all():
+            latests.append(subdirectory.last_edited)
+            
+        return max(latests, default=self.created)
     
     def __str__(self):
         return f"REPOSITORY: {self.name}" if self.is_repository else self.name
@@ -70,7 +96,7 @@ class Directory(models.Model):
 class FileModel(models.Model):
     parent = models.ForeignKey(Directory, on_delete=models.CASCADE, related_name="files")
     file = models.FileField(upload_to=get_file_upload_path)
-    uploaded = models.DateTimeField(auto_now=True)
+    uploaded = models.DateTimeField(auto_now_add=True)
 
     @property
     def filename(self):
@@ -96,7 +122,7 @@ class FileModel(models.Model):
 
 class Comment(models.Model):
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.DO_NOTHING, related_name="comments")
-    timestamp = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
     repository = models.ForeignKey(Directory, on_delete=models.CASCADE, related_name="comments")
     comment = models.TextField()
 
