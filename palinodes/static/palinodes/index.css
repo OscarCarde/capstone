@@ -99,8 +99,41 @@ button {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: center;
     }
+        .profile {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+            input[type="file"]{
+                border: none;
+                padding: 10px;
+                color: white;
+                font-size: large;
+            }
+
+            input[value="Save"] {
+                background-color: green;
+                border: none;
+                margin-top: 20px;
+                padding: 8px;
+                color: white;
+                font-size: large;
+            }
+
+            label {
+                align-self: flex-start;
+            }
+            input[value="Save"]:hover {
+                background-color: #00bb00;
+            }
+            input[value="Save"]:active {
+                background-color: green;
+            }
+
+
         #avatar {
             width: 300px;
             height: 300px;
@@ -272,6 +305,10 @@ button {
         padding-left: 20px;
         background-color: #2b2d31;
         grid-area: 2 / 1 / span 1 / span 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow-y: scroll;
     }
 
         #repository-contents-topbar{
@@ -333,6 +370,7 @@ button {
         .file-entries {
             display: flex;
             align-items: center;
+            overflow-y: scroll;
         }
 
         .file-entries p {
@@ -361,7 +399,6 @@ button {
         padding: 10px 100px 10px 100px;
         display: flex;
         flex-direction: column;
-        overflow-y: scroll;
     }
 
     #chat {

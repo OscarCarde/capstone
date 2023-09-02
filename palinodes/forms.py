@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Directory
+from .models import Directory, Profile
 
 class RepositoryForm(ModelForm):
     
@@ -8,3 +8,7 @@ class RepositoryForm(ModelForm):
         fields = ["name", "description", "collaborators"]
 
     
+class ProfileForm(ModelForm):
+    class Meta:
+        model= Profile
+        fields = ['description', 'avatar']

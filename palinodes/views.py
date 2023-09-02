@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 
-from django.shortcuts import render
+from django.shortcuts import render, reverse
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 import json
@@ -13,7 +13,7 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import User, Profile, Directory, FileModel, Comment
-from .forms import RepositoryForm
+from .forms import RepositoryForm, ProfileForm
 from .serializers import DirectorySerializer, FileSerializer, CommentSerializer
 
 #################__LANDING__########################
@@ -23,7 +23,25 @@ def index(request):
 
 @login_required
 def dashboard(request):
-     return render(request, "palinodes/dashboard.html")
+    if request.method == 'POST':
+        print("WOLF FENCING: performing post method")
+        profile = request.user.profile
+        avatar = request.FILES.get("avatar")
+        print("WOLF FENCING: checking file: \n" + str(request.FILES.keys()))
+        description = request.POST.get("description")
+        print("WOLF FENCING: checking description: \n" + description)
+        if avatar:
+            profile.avatar = avatar
+        if description:
+            profile.description = description
+
+        profile.save() 
+        
+        return HttpResponseRedirect(reverse("dashboard"))
+
+    return render(request, "palinodes/dashboard.html", {
+        "profile_form": ProfileForm()
+    })
 
 class CreateRepository(LoginRequiredMixin, CreateView):
     model = Directory

@@ -9,14 +9,28 @@
 {% block body %}
 
 <div id="profile-banner">
-    {% if user.profile.avatar %}
-    <img id="avatar" src={{user.profile.avatar.url}}>
-    {% else %}
-    <img style="background-color: black;" id="avatar" src='/media/Default-Profile-Picture.png' >
-    {% endif %}
-    <h1>{{user.username}}</h1>
-    <p><em>{{user.profile.description}}</em></p>
-    <button class="bordered clickable">Edit Profile</button>
+    <div id="profile-details" class="profile">
+        {% if user.profile.avatar %}
+        <img id="avatar" src={{user.profile.avatar.url}}>
+        {% else %}
+        <img style="background-color: black;" id="avatar" src='/media/Default-Profile-Picture.png' >
+        {% endif %}
+        <h1>{{user.username}}</h1>
+        <p data-description="{{user.profile.description}}" id="profile-description"><em>{{user.profile.description}}</em></p>
+        <button class="bordered clickable">Edit Profile</button>
+    </div>
+    <form class="profile" style="display: none" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div>
+            <label for="id_avatar">Avatar:</label>
+            {{profile_form.avatar}}
+        </div>
+        {{profile_form.description}}
+        <div>
+            <input class="bordered clickable" type="submit" value="Save">
+            <button class="bordered clickable" id="cancel-edit">Cancel</button>
+        </div> 
+    </form>
 </div>
     
 
@@ -27,16 +41,7 @@
         <li class="bordered clickable" id="collaborating-btn">Collaborating</li>
         <li class="clickable" id="new-repository-icn" style= "width: auto; height: 24px; padding: 0px; border-radius:90%; align-self: center"> 
             <a href={% url 'new-repository' %}>
-                <svg  width="23" height="24" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g clip-path="url(#clip0_87_48)">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 8.5C1.5 4.68578 4.41015 1.59375 8 1.59375C11.5899 1.59375 14.5 4.68578 14.5 8.5C14.5 12.3143 11.5899 15.4062 8 15.4062C4.41015 15.4062 1.5 12.3143 1.5 8.5ZM8 0C3.58172 0 0 3.80558 0 8.5C0 13.1944 3.58172 17 8 17C12.4183 17 16 13.1944 16 8.5C16 3.80558 12.4183 0 8 0ZM8.75 5.04688C8.75 4.60678 8.41421 4.25 8 4.25C7.58579 4.25 7.25 4.60678 7.25 5.04688V7.70312H4.75C4.33579 7.70312 4 8.0599 4 8.5C4 8.9401 4.33579 9.29688 4.75 9.29688H7.25V11.9531C7.25 12.3932 7.58579 12.75 8 12.75C8.41421 12.75 8.75 12.3932 8.75 11.9531V9.29688H11.25C11.6642 9.29688 12 8.9401 12 8.5C12 8.0599 11.6642 7.70312 11.25 7.70312H8.75V5.04688Z" fill="white"/>
-                    </g>
-                    <defs>
-                    <clipPath id="clip0_87_48">
-                    <rect width="16" height="17" fill="white"/>
-                    </clipPath>
-                    </defs>
-                    </svg>
+                <img src="{{MEDIA_URL}}media/icons/plus-circle.svg" alt="">
             </a>
                 
         </li>
@@ -104,9 +109,7 @@
                 <div class="dash-collaborators">
                     <p class="dash-repo-owner-name">owned by {{repository.owner.username}}</p>
                     <div>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M15.4989 2.92969C13.0136 2.92969 10.9989 4.94469 10.9989 7.42969C10.9989 9.91469 13.0136 11.9297 15.4989 11.9297C17.9842 11.9297 19.9989 9.91469 19.9989 7.42969C19.9989 4.94469 17.9842 2.92969 15.4989 2.92969ZM7.9989 3.92969C5.7898 3.92969 3.9989 5.72069 3.9989 7.92969C3.9989 10.1387 5.7898 11.9297 7.9989 11.9297C8.8283 11.9297 9.6139 11.6767 10.2801 11.2107C10.7328 10.8947 10.8465 10.2577 10.5301 9.80469C10.2137 9.35169 9.6078 9.26969 9.1551 9.58569C8.8222 9.81869 8.4151 9.92969 7.9989 9.92969C6.8943 9.92969 5.9989 9.03469 5.9989 7.92969C5.9989 6.82469 6.8943 5.92969 7.9989 5.92969C8.3251 5.92969 8.6235 6.00168 8.9051 6.14868C9.3951 6.40368 10.0253 6.2317 10.2801 5.7417C10.535 5.2527 10.3326 4.62168 9.8427 4.36768C9.2776 4.07368 8.6483 3.92969 7.9989 3.92969ZM15.4989 4.92969C16.8796 4.92969 17.9989 6.04869 17.9989 7.42969C17.9989 8.81069 16.8796 9.92969 15.4989 9.92969C14.1182 9.92969 12.9989 8.81069 12.9989 7.42969C12.9989 6.04869 14.1182 4.92969 15.4989 4.92969ZM5.0614 13.2737C3.2273 14.0307 1.9989 15.8857 1.9989 17.9297V19.9297C1.9989 20.4817 2.4466 20.9297 2.9989 20.9297H6.9989C7.5512 20.9297 7.9989 20.4817 7.9989 19.9297C7.9989 19.3777 7.5512 18.9297 6.9989 18.9297H3.9989V17.9297C3.9989 16.8057 4.6656 15.7737 5.4319 15.3197C6.1526 15.6237 6.915 15.8537 7.593 15.9107C8.1434 15.9577 8.6397 15.5427 8.6864 14.9917C8.7331 14.4417 8.3354 13.9757 7.7851 13.9287C7.3461 13.8917 6.8663 13.7597 6.3114 13.5237C6.1774 13.4667 6.0996 13.4217 5.8427 13.3047C5.5908 13.1897 5.3172 13.1677 5.0614 13.2737ZM12.0614 13.2737C10.2273 14.0307 8.9989 15.8857 8.9989 17.9297V19.9297C8.9989 20.4817 9.4466 20.9297 9.9989 20.9297H20.9989C21.5512 20.9297 21.9989 20.4817 21.9989 19.9297V17.9297C21.9989 15.9337 20.7637 14.1237 18.9364 13.3357C18.6792 13.2247 18.3795 13.2217 18.1239 13.3357C17.2391 13.7327 16.3771 13.9297 15.4989 13.9297C14.6237 13.9297 13.7587 13.7217 12.8427 13.3047C12.5908 13.1897 12.3172 13.1677 12.0614 13.2737ZM12.4459 15.3197C13.3907 15.6777 14.5298 15.9297 15.4989 15.9297C16.4604 15.9297 17.5524 15.6947 18.4781 15.3527C19.3807 15.8667 19.9989 16.8287 19.9989 17.9297V18.9297H10.9989V17.9297C10.9989 16.7647 11.6548 15.7827 12.4459 15.3197Z" fill="white"/>
-                        </svg>
+                        <img src="{{MEDIA_URL}}media/icons/people.svg" alt="">
                         <p>{{repository.number_of_collaborators}}</p>
                     </div>
                 </div>
