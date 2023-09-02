@@ -28,9 +28,8 @@
     - [x] When clicking on an audio file, the file should play 
     - [x] When playing, the file should be visualized as an audio waveform with a time banner
 
-- [ ] Profile: From their Dashboard, users should be able to update their profile's details
-  - [ ] The form should appear on the same page
-  - [ ] The page shouldn't reload on validation
+- [x] Profile: From their Dashboard, users should be able to update their profile's details
+  - [x] The form should appear on the same page
 
 - [ ] Notifications: the Dashboard should display a notification on each repository with a new message or file uploaded
 
@@ -44,9 +43,7 @@
   - [ ] Only the owner can remove collaborators
   - [ ] The owner can transfer ownership to another user
 
-  (((- [ ] Collaboration Features:
-    - [ ] Real-time collaboration on tracks using WebSocket communication.
-
+  (((
   - [ ] User Permissions and Access Control:
     - [ ] Different levels of access for collaborators (e.g., read-only, read-write).
     - [ ] Project owners can manage collaborators and their permissions.

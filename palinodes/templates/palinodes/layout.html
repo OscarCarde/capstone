@@ -7,7 +7,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta id="loggedin-user" data-username={{user.username}}>
-    <link rel="stylesheet" href={% static 'palinodes/index.css' %}>
+    <link rel="stylesheet" media="screen and (min-width: 900px)" href={% static 'palinodes/widescreen.css' %}>
+    <link rel="stylesheet" media="screen and (max-width: 899px)" href={% static 'palinodes/smallscreen.css' %}>
     {% block stylesheet %}{% endblock stylesheet %}
     <title>{%block title %}index{% endblock title %}</title>
     {% block script %}

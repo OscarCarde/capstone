@@ -1,7 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     //Event listeners to toggle between recent/owned/collaborating repositories
         //recent
-    document.querySelector("#recent-btn").onclick = () => {
+    const recentBtn = document.querySelector("#recent-btn");
+    recentBtn.style.display = "none";
+    const ownedBtn = document.querySelector("#my-repositories-btn");
+    const collabBtn = document.querySelector("#collaborating-btn");
+    recentBtn.onclick = () => {
+        recentBtn.style.display = "none";
+        ownedBtn.style.display = "block";
+        collabBtn.style.display = "block";
+
         document.querySelectorAll(".owned-repositories").forEach(repository => {
             repository.style.display = "none";
         })
@@ -13,7 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
         //owned
-    document.querySelector("#my-repositories-btn").onclick = () => {
+    ownedBtn.onclick = () => {
+        recentBtn.style.display = "block";
+        ownedBtn.style.display = "none";
+        collabBtn.style.display = "block";
+
         document.querySelectorAll(".owned-repositories").forEach(repository => {
             repository.style.display = "block";
         })
@@ -25,7 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
         //collab
-    document.querySelector("#collaborating-btn").onclick = () => {
+    collabBtn.onclick = () => {
+        recentBtn.style.display = "block";
+        ownedBtn.style.display = "block";
+        collabBtn.style.display = "none";
+
         document.querySelectorAll(".owned-repositories").forEach(repository => {
             repository.style.display = "none";
         })
