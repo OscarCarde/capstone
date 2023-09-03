@@ -224,16 +224,18 @@ async function loadDirectoryContents(directory_pk) {
             deleteBtn.id = "";
             deleteBtn.style.display = "block";
             deleteBtn.onclick = () => {
+                container.remove();
                 deleteDirectory(subdirectory.pk);
             }
 
 
             let directory = document.createElement('p');
             directory.innerHTML = subdirectory.name;
+            directory.className = "clickable";
             container.append(folderIcon, directory, deleteBtn);
             container.setAttribute("data-pk", subdirectory.pk);
-            container.className = "directories file-entries clickable";
-            container.addEventListener('click', () => {
+            container.className = "directories file-entries";
+            directory.addEventListener('click', () => {
                 loadDirectoryContents(container.dataset.pk)
             });
 
@@ -245,9 +247,24 @@ async function loadDirectoryContents(directory_pk) {
         data.files.forEach(file => {
             let container = document.createElement('div');
             var wavesurfer;
+
+            //DELETE FOLDER BUTTON
+            let deleteBtn = deleteBtnTemplate.cloneNode(true);
+            deleteBtn.id = "";
+            deleteBtn.style.display = "block";
+            deleteBtn.onclick = () => {
+                container.remove();
+                deleteFile(file.pk);
+            }
+
+            let filename = document.createElement('p');
+            filename.className = "clickable";
+            filename.style.display = "block";
+            filename.innerHTML = file.filename;
+
             if(file.is_audiofile){
                 var hiddenfileIcon = document.querySelector("#audiofile-icon");
-                container.addEventListener('click', () => {
+                filename.addEventListener('click', () => {
                     document.querySelector("#soundwave").replaceChildren();
                     wavesurfer = WaveSurfer.create({
                         container: '#soundwave',
@@ -271,19 +288,8 @@ async function loadDirectoryContents(directory_pk) {
             let fileIcon = hiddenfileIcon.cloneNode(true);
             fileIcon.style.display = "block";
 
-            //DELETE FOLDER BUTTON
-            let deleteBtn = deleteBtnTemplate.cloneNode(true);
-            deleteBtn.id = "";
-            deleteBtn.style.display = "block";
-            deleteBtn.onclick = () => {
-                container.remove();
-                deleteFile(file.pk);
-            }
-
-            let filename = document.createElement('p');
-            filename.innerHTML = file.filename;
             container.append(fileIcon, filename, deleteBtn);
-            container.className = "audiofile file-entries clickable";
+            container.className = "audiofile file-entries";
             document.getElementById("contents").append(container);
         })
         //LOAD FIRST AUDIO FILE IF PRESENT

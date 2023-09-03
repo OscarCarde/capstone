@@ -91,16 +91,17 @@ button {
     display: grid;
     height:100%;
     width: 100vw;
-    grid-template-columns: 2fr 4fr 1fr;
+    grid-template-columns: 2fr 4fr auto;
     overflow: scroll;
     overflow-x: hidden;
 }
 
     #profile-banner {
-        background-color: #1d1d1d;
+        background-color: #1f1f1f;
         grid-column: 1 / span 1;
         margin-left: 0px;
         margin-top: 0px;
+        padding-left: 20px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -157,15 +158,13 @@ button {
 
     #repositories-list {
         grid-column: 2 / span 1;
-
+        padding-right: 20px;
         display: flex;
         flex-direction: column;
     }
         #repositories-list ul {
             display: flex;
-        
-            background-color: black;
-            width: 100%;
+            justify-content: space-around;
         }
 
             #repositories-list ul li {
@@ -174,7 +173,6 @@ button {
                 width: 150px;
                 padding: 10px;
                 text-align: center;
-                margin-left: 75px;
             }
 
             #new-repository-icn {
@@ -197,7 +195,7 @@ button {
     }
 
         .repositories-li {
-            flex-basis: 300px;
+            flex-basis: 400px;
             position: relative;
             margin: 10px;
             padding: 10px 10px;
@@ -374,7 +372,9 @@ button {
         }
 
         .file-entries p {
-            padding-left: 20px;
+            margin: 5px;
+            padding: 10px;
+            flex-grow: 1;
         }
 
         .delete-btn {
