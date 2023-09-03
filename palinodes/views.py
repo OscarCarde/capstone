@@ -60,7 +60,7 @@ class CreateRepository(LoginRequiredMixin, CreateView):
 def repository_view(request, repository_id):
     repository = Directory.objects.get(id=repository_id)
     return render(request, "palinodes/repository.html", {
-        "repository": repository
+        "repository": repository, "repository_form": RepositoryForm()
     })
 
 ##################__APIS__##########################

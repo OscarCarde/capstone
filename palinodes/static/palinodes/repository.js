@@ -56,7 +56,21 @@ document.addEventListener('DOMContentLoaded', function() {
             })
         })
     }
-    
+
+    //SETTINGS
+    var details = document.querySelector("#repository-details");
+    document.querySelector("#repository-settings").addEventListener('click', () => {
+        details.querySelector("#repository-settings").style.display = "none";
+        details.querySelector("#repository-details-details").style.display = "none";
+        details.querySelector("#repository-details-collaborators").style.display = 'none';
+        details.querySelector("form").style.display = "block";
+    })
+    details.querySelector("button").onclick = () => {
+        details.querySelector("#repository-settings").style.display = "flex";
+        details.querySelector("#repository-details-details").style.display = 'flex';
+        details.querySelector("#repository-details-collaborators").style.display = 'block';
+        details.querySelector("form").style.display = "none";
+    }
 });
 
 async function deleteDirectory(pk) {

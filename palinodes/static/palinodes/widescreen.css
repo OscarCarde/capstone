@@ -264,6 +264,14 @@ button {
         width: 300px;
     }
 
+    #id_description {
+        max-height: 25px;
+    }
+
+    #id_collaborators {
+        max-height: 40px;
+    }
+
 #repository-container {
     grid-column: 1 / span 3;
     display: grid;
@@ -293,6 +301,7 @@ button {
             display: flex;
             flex-direction: column;
             text-align: center;
+            overflow-y: scroll;
         }
 
         #repository-settings {

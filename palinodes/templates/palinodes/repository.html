@@ -18,7 +18,7 @@
 {% endblock navbar %}
 
 {% block body %}
-    <div id="repository-container"> 
+    <div id="repository-container">
         <div id=repository-details>
             <div class="clickable" id="repository-settings">
                 <svg width="19" height="20" viewBox="0 0 19 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -41,6 +41,14 @@
                     {% endfor %}
                 </div>
             </div>
+            <form style="display: none" method="post">
+                {% csrf_token %}
+                {{repository_form.name}}
+                {{repository_form.description}}
+                {{repository_form.collaborators}}
+                <input class="bordered clickable" type="submit" value="Save">
+                <button class="bordered clickable" id="cancel-edit">Cancel</button>
+            </form>
         </div>
         
         <div id="repository-contents">
