@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
         repositoryForm.querySelector("#id_description").value = details.dataset.description;
         repositoryForm.querySelector("#id_collaborators").value = details.dataset.collaborators;
 
+        //DELETE REPOSITORY
         repositoryForm.querySelector("#delete-repository").onclick = () => {
             deleteDirectory(repositorypk);
             window.location.href = "/dashboard";
