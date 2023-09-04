@@ -1,6 +1,5 @@
 //import WaveSurfer from '/static/palinodes/node_modules/wavesurfer.js/dist/wavesurfer.js';
 import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js'
-import TimelinePlugin from 'https://unpkg.com/wavesurfer.js@7/dist/plugins/timeline.esm.js'
 
 const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
 const user = document.querySelector("#loggedin-user").dataset.username;
@@ -63,7 +62,17 @@ document.addEventListener('DOMContentLoaded', function() {
         details.querySelector("#repository-settings").style.display = "none";
         details.querySelector("#repository-details-details").style.display = "none";
         details.querySelector("#repository-details-collaborators").style.display = 'none';
-        details.querySelector("form").style.display = "block";
+        let repositoryForm = details.querySelector("form");
+        repositoryForm.style.display = "block";
+        
+        repositoryForm.querySelector("#id_name").value = details.dataset.name;
+        repositoryForm.querySelector("#id_description").value = details.dataset.description;
+        repositoryForm.querySelector("#id_collaborators").value = details.dataset.collaborators;
+
+        repositoryForm.querySelector("#delete-repository").onclick = () => {
+            deleteDirectory(repositorypk);
+            window.location.href = "/dashboard";
+        }
     })
     details.querySelector("button").onclick = () => {
         details.querySelector("#repository-settings").style.display = "flex";

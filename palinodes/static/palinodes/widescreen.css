@@ -265,11 +265,15 @@ button {
     }
 
     #id_description {
-        max-height: 25px;
+        max-height: 50px;
     }
 
     #id_collaborators {
         max-height: 40px;
+    }
+
+    #delete-repository {
+        background-color: red;
     }
 
 #repository-container {
@@ -311,6 +315,13 @@ button {
 
         #repository-settings p, #repository-settings svg {
             margin-left:20px;
+        }
+
+        #repository-details form {
+            grid-area: 1 / 1 / span 2 / span 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;    
         }
 
     #repository-contents {

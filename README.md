@@ -31,6 +31,8 @@
 - [x] Profile: From their Dashboard, users should be able to update their profile's details
   - [x] The form should appear on the same page
 
+- [x] Responsive: The website should display an interface appropriate the the device it is viewed on
+
 - [ ] Notifications: the Dashboard should display a notification on each repository with a new message or file uploaded
 
 - [ ] Project View:
