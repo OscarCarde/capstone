@@ -56,12 +56,38 @@ class CreateRepository(LoginRequiredMixin, CreateView):
         return reverse("repository", args=[str(self.object.id)])
 
 
-
+@login_required
 def repository_view(request, repository_id):
     repository = Directory.objects.get(id=repository_id)
-    return render(request, "palinodes/repository.html", {
-        "repository": repository
-    })
+
+    allowed = request.user in repository.collaborators.all() or request.user == repository.owner
+
+    if allowed:
+        if request.method == 'POST':
+            form = RepositoryForm(request.POST)
+            if form.is_valid():
+                try:
+                    name = form.cleaned_data.get("name")
+                    description = form.cleaned_data.get("description")
+                    collaborators = form.cleaned_data.get("collaborators")
+
+                    repository.name = name
+                    repository.description = description
+
+                    # Clear existing collaborators and add the selected ones
+                    repository.collaborators.clear()
+                    repository.collaborators.add(*collaborators)
+
+                    repository.save()
+
+                except Exception as e:
+                    print(e)
+
+        return render(request, "palinodes/repository.html", {
+            "repository": repository, "repository_form": RepositoryForm()
+        })
+    else:
+        return HttpResponseRedirect(reverse("dashboard"))
 
 ##################__APIS__##########################
 def directory_api(request, pk):

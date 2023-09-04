@@ -31,6 +31,8 @@
 - [x] Profile: From their Dashboard, users should be able to update their profile's details
   - [x] The form should appear on the same page
 
+- [x] Responsive: The website should display an interface appropriate the the device it is viewed on
+
 - [ ] Notifications: the Dashboard should display a notification on each repository with a new message or file uploaded
 
 - [ ] Project View:
@@ -39,9 +41,10 @@
   - [x] delete files 
   - [x] delete folders with all their contents,
   - [ ] move their files to a different directory
-  - [ ] and add multiple collaborators (musicians) (((who can be invited via email))).
+  - [x] and add multiple collaborators (musicians) (((who can be invited via email))).
   - [ ] Only the owner can remove collaborators
   - [ ] The owner can transfer ownership to another user
+  - [ ] The Owner can delete the project and is redirected to his dashboard when doing so
 
   (((
   - [ ] User Permissions and Access Control:
