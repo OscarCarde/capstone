@@ -58,29 +58,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //SETTINGS
     var details = document.querySelector("#repository-details");
-    document.querySelector("#repository-settings").addEventListener('click', () => {
-        details.querySelector("#repository-settings").style.display = "none";
-        details.querySelector("#repository-details-details").style.display = "none";
-        details.querySelector("#repository-details-collaborators").style.display = 'none';
-        let repositoryForm = details.querySelector("form");
-        repositoryForm.style.display = "block";
-        
-        repositoryForm.querySelector("#id_name").value = details.dataset.name;
-        repositoryForm.querySelector("#id_description").value = details.dataset.description;
-        repositoryForm.querySelector("#id_collaborators").value = details.dataset.collaborators;
+    var repositoryForm = details.querySelector("form");
 
-        //DELETE REPOSITORY
-        repositoryForm.querySelector("#delete-repository").onclick = () => {
-            deleteDirectory(repositorypk);
-            window.location.href = "/dashboard";
-        }
-    })
-    details.querySelector("button").onclick = () => {
+    //DELETE REPOSITORY
+    repositoryForm.querySelector("#delete-repository").onclick = () => {
+        deleteDirectory(repositorypk);
+        window.location.href = "/dashboard";
+    }
+
+    //CANCEL EDIT
+    repositoryForm.querySelector("#cancel-edit").onclick = () => {
         details.querySelector("#repository-settings").style.display = "flex";
         details.querySelector("#repository-details-details").style.display = 'flex';
         details.querySelector("#repository-details-collaborators").style.display = 'block';
         details.querySelector("form").style.display = "none";
     }
+
+    //EDIT FORM HANDLING
+    document.querySelector("#repository-settings").addEventListener('click', () => {
+        details.querySelector("#repository-settings").style.display = "none";
+        details.querySelector("#repository-details-details").style.display = "none";
+        details.querySelector("#repository-details-collaborators").style.display = 'none';
+        
+        repositoryForm.style.display = "block";
+        
+        repositoryForm.querySelector("#id_name").value = details.dataset.name;
+        repositoryForm.querySelector("#id_description").value = details.dataset.description;
+        repositoryForm.querySelector("#id_collaborators").value = details.dataset.collaborators;
+        
+    })
 });
 
 async function deleteDirectory(pk) {

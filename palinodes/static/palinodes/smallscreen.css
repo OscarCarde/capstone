@@ -294,6 +294,15 @@ button {
         #repository-settings p, #repository-settings svg {
             margin-left:20px;
         }
+        #repository-details form {
+            grid-area: 1 / 1 / span 2 / span 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;    
+        }
+            #delete-repository {
+                background-color: red;
+            }
 
     #repository-contents {
         padding-left: 20px;
