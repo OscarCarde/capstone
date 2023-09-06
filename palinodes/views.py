@@ -6,13 +6,14 @@ from django.shortcuts import render, reverse
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 import json
+import re
 
 from django.db import IntegrityError
 
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import User, Profile, Directory, FileModel, Comment
+from .models import User, Profile, Directory, FileModel, Comment, Notification
 from .forms import RepositoryForm, ProfileForm
 from .serializers import DirectorySerializer, FileSerializer, CommentSerializer
 
@@ -129,6 +130,12 @@ def new_directory_api(request):
         new_directory = Directory.objects.create(name= name, parent= parent, owner= parent.owner)
         new_directory.collaborators.set(parent.collaborators.all())
         new_directory.save()
+
+        repository = new_directory.repository
+        notification = Notification.objects.create(sender=request.user, repository=repository, message="new directory")
+        recipients = set(repository.collaborators) + {repository.owner} - {request.user}
+        notification.recipients.set(recipients)
+        notification.save()
 
         return JsonResponse({"message": "directory created successfully", "directory-pk": new_directory.pk}, status=200)
     except Directory.DoesNotExist:

@@ -1,4 +1,5 @@
 import os
+from typing import Iterable, Optional
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -53,6 +54,11 @@ class Directory(models.Model):
     parent = models.ForeignKey("self", blank=True, null=True, on_delete=models.CASCADE, related_name="subdirectories")
 
     @property
+    def repository(self):
+        #TODO
+        pass
+    
+    @property
     def number_of_collaborators(self):
         return self.collaborators.count()
     
@@ -99,6 +105,14 @@ class FileModel(models.Model):
     uploaded = models.DateTimeField(auto_now_add=True)
 
     @property
+    def repository(self):
+    #TODO
+        if self.parent.is_repository:
+            return self.parent
+        else:
+            return self.repository(self.parent)
+
+    @property
     def filename(self):
         return os.path.basename(self.file.name)
     
@@ -130,3 +144,15 @@ class Comment(models.Model):
     def posted_since(self):
         #return timesince(self.timestamp, timezone.now()) + " ago"
         return f"{self.timestamp.strftime('%d-%m-%Y')} {self.timestamp.strftime('%H:%M')}"
+    
+class Notification(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name= "sent_notifications")
+    repository = models.ForeignKey(Directory, on_delete= models.CASCADE, related_name = "notifications")
+    message = models.CharField(max_length=100)
+    recipients = models.ManyToManyField(User, blank=True, related_name="notifications")
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if self.recipients.exists():
+            super(Notification, self).save(*args, **kwargs)
+        
