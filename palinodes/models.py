@@ -145,6 +145,9 @@ class Comment(models.Model):
         #return timesince(self.timestamp, timezone.now()) + " ago"
         return f"{self.timestamp.strftime('%d-%m-%Y')} {self.timestamp.strftime('%H:%M')}"
     
+    def __str__(self):
+        return f"{self.user.username} commented on {self.repository.name}, {self.posted_since}"
+
 class Notification(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name= "sent_notifications")
     repository = models.ForeignKey(Directory, on_delete= models.CASCADE, related_name = "notifications")

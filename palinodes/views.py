@@ -61,6 +61,13 @@ class CreateRepository(LoginRequiredMixin, CreateView):
 def repository_view(request, repository_id):
     repository = Directory.objects.get(id=repository_id)
 
+    notifications = repository.notifications.all()
+    for notification in notifications:
+        if request.user in notification.recipients.all():
+            notification.recipients.remove(request.user)
+        if not notification.recipients.exists():
+            notification.delete()
+            
     allowed = request.user in repository.collaborators.all() or request.user == repository.owner
 
     if allowed:
@@ -83,6 +90,7 @@ def repository_view(request, repository_id):
 
                 except Exception as e:
                     print(e)
+
 
         return render(request, "palinodes/repository.html", {
             "repository": repository, "repository_form": RepositoryForm()
