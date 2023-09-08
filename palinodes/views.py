@@ -61,13 +61,14 @@ class CreateRepository(LoginRequiredMixin, CreateView):
 def repository_view(request, repository_id):
     repository = Directory.objects.get(id=repository_id)
 
+    #TODO refactor to avoid unnecessary exhaustive searches
     notifications = repository.notifications.all()
     for notification in notifications:
         if request.user in notification.recipients.all():
             notification.recipients.remove(request.user)
         if not notification.recipients.exists():
             notification.delete()
-            
+
     allowed = request.user in repository.collaborators.all() or request.user == repository.owner
 
     if allowed:
