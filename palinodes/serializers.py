@@ -1,5 +1,10 @@
 from rest_framework import serializers
-from .models import Directory, FileModel, Comment
+from .models import Directory, FileModel, Comment, Notification
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Notification
+        fields=["repository", "message", "timestamp"]
 
 class CommentSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()

@@ -202,8 +202,12 @@ button {
             display: flex;
         }
 
-            .repository-link img {
+            .repo-icon {
                 margin: 0px 20px 0px 5px;
+            }
+
+            .notification {
+                margin-left: auto;
             }
 
             .dash-repo-owner-name {

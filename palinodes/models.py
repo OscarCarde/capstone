@@ -1,16 +1,22 @@
 import os
+from typing import Iterable, Optional
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.functional import cached_property
 
-from datetime import datetime, timezone
+from datetime import datetime
+
+###__helpers__###
+def get_avatar_path(instance, filename):
+    return f"{instance.user.id}/{filename}"
+
+def get_file_upload_path(instance, filename):
+    return f"{instance.parent.path}/{filename}"
+##################
 
 class User(AbstractUser):
     pass
-
-def get_avatar_path(instance, filename):
-    return f"{instance.user.id}/{filename}"
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
@@ -38,11 +44,7 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
     
-
-
 ####### Hierarchical directory structure ########
-def get_file_upload_path(instance, filename):
-        return f"{instance.parent.path}/{filename}"
 
 class Directory(models.Model):
     name = models.CharField(max_length=50)
@@ -51,6 +53,18 @@ class Directory(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="directories")
     collaborators = models.ManyToManyField(User, blank=True, related_name="collaborating")
     parent = models.ForeignKey("self", blank=True, null=True, on_delete=models.CASCADE, related_name="subdirectories")
+
+    @property
+    def latest_notification(self):
+        if self.is_repository:
+            return self.notifications.latest('timestamp')
+
+    @property
+    def repository(self):
+        if self.is_repository:
+            return self
+        else:
+            return self.parent.repository
 
     @property
     def number_of_collaborators(self):
@@ -98,6 +112,7 @@ class FileModel(models.Model):
     file = models.FileField(upload_to=get_file_upload_path)
     uploaded = models.DateTimeField(auto_now_add=True)
 
+    
     @property
     def filename(self):
         return os.path.basename(self.file.name)
@@ -130,3 +145,16 @@ class Comment(models.Model):
     def posted_since(self):
         #return timesince(self.timestamp, timezone.now()) + " ago"
         return f"{self.timestamp.strftime('%d-%m-%Y')} {self.timestamp.strftime('%H:%M')}"
+    
+    def __str__(self):
+        return f"{self.user.username} commented on {self.repository.name}, {self.posted_since}"
+
+class Notification(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name= "sent_notifications")
+    repository = models.ForeignKey(Directory, on_delete= models.CASCADE, related_name = "notifications")
+    message = models.CharField(max_length=100)
+    recipients = models.ManyToManyField(User, blank=True, related_name="notifications")
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.message + f" on {self.timestamp}"

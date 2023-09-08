@@ -53,10 +53,13 @@
             <div style="display:none" class="repositories-li owned-repositories bordered clickable">
                 <a class="link-layer" href={% url 'repository' repository.id %}></a>
                 <div class="repository-link">
-                    <img src="{{MEDIA_URL}}media/icons/audio-wave.svg" alt="">
+                    <img class="repo-icon" src="{{MEDIA_URL}}media/icons/audio-wave.svg" alt="">
                     <a href={% url 'repository' repository.id %}>
                         <strong>{{repository.name}}</strong>
                     </a>
+                    {% if user in repository.latest_notification.recipients.all  %}
+                    <img class="notification" src="{{MEDIA_URL}}media/icons/bell-fill.svg">
+                    {% endif %}
                 </div>
                 <p class="dash-repo-description">{{repository.description}}</p>
                 <div class="dash-collaborators">
@@ -80,6 +83,9 @@
                     <a href={% url 'repository' repository.id %}>
                         <strong>{{repository.name}}</strong>
                     </a>
+                    {% if  user in repository.latest_notification.recipients.all %}
+                    <img class="notification" src="{{MEDIA_URL}}media/icons/bell-fill.svg">
+                    {% endif %}
                 </div>
                 <p class="dash-repo-description">{{repository.description}}</p>
                 <div class="dash-collaborators">
@@ -105,6 +111,9 @@
                     <a href={% url 'repository' repository.id %}>
                         <strong>{{repository.name}}</strong>
                     </a>
+                    {% if  user in repository.latest_notification.recipients.all %}
+                    <img class="notification" src="{{MEDIA_URL}}media/icons/bell-fill.svg">
+                    {% endif %}
                 </div>
                 <p class="dash-repo-description">{{repository.description}}</p>
                 <div class="dash-collaborators">

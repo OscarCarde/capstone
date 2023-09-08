@@ -8,6 +8,7 @@ urlpatterns = [
     path("new-repository", CreateRepository.as_view(), name="new-repository"),
     path("repository/<int:repository_id>", views.repository_view, name="repository"),
     #API urls
+    path("notifications", views.notifications_api, name="notifications"),
     path("directory/<int:pk>", views.directory_api, name="directory"),
     path("repository/<int:repositorypk>/comments", views.get_comments_api, name="comments"),
     path("new-directory", views.new_directory_api, name="new-directory"),

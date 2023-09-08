@@ -6,6 +6,7 @@ from django.shortcuts import render, reverse
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 import json
+from .helpers import send_notifications
 
 from django.db import IntegrityError
 
@@ -14,7 +15,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import User, Profile, Directory, FileModel, Comment
 from .forms import RepositoryForm, ProfileForm
-from .serializers import DirectorySerializer, FileSerializer, CommentSerializer
+from .serializers import DirectorySerializer, FileSerializer, CommentSerializer, NotificationSerializer
 
 #################__LANDING__########################
 
@@ -60,6 +61,14 @@ class CreateRepository(LoginRequiredMixin, CreateView):
 def repository_view(request, repository_id):
     repository = Directory.objects.get(id=repository_id)
 
+    #TODO refactor to avoid unnecessary exhaustive searches
+    notifications = repository.notifications.all()
+    for notification in notifications:
+        if request.user in notification.recipients.all():
+            notification.recipients.remove(request.user)
+        if not notification.recipients.exists():
+            notification.delete()
+
     allowed = request.user in repository.collaborators.all() or request.user == repository.owner
 
     if allowed:
@@ -83,6 +92,7 @@ def repository_view(request, repository_id):
                 except Exception as e:
                     print(e)
 
+
         return render(request, "palinodes/repository.html", {
             "repository": repository, "repository_form": RepositoryForm()
         })
@@ -90,7 +100,12 @@ def repository_view(request, repository_id):
         return HttpResponseRedirect(reverse("dashboard"))
 
 ##################__APIS__##########################
-def directory_api(request, pk):
+def notifications_api(request):
+    notifications = request.user.notifications
+    serializer = NotificationSerializer(notifications, many=True)
+    return JsonResponse({"notifications": serializer.data})
+
+def directory_api(request, pk: int):
     try:
         directory = Directory.objects.get(pk=pk)
         directory_serializer = DirectorySerializer(directory)
@@ -115,7 +130,6 @@ def directory_api(request, pk):
     except Exception as e:
         return JsonResponse({"message": str(e)}, status=500)
     
-
 def new_directory_api(request):
     #get name and parent pk
     raw_content = request.body
@@ -130,13 +144,15 @@ def new_directory_api(request):
         new_directory.collaborators.set(parent.collaborators.all())
         new_directory.save()
 
+        send_notifications(request.user, new_directory.repository, f"Directory {name} added by {request.user.username}")
+        
+
         return JsonResponse({"message": "directory created successfully", "directory-pk": new_directory.pk}, status=200)
     except Directory.DoesNotExist:
         return JsonResponse({"message": f"directory with primary key {parent_pk} does not exist"}, status=400)
     except Exception as e:
-        return JsonResponse({"message": str(e)}, status=500)
+        return JsonResponse({"message":f"{str(e)} \n user: {request.user.username}"}, status=500)
     
-
 @login_required
 def delete_directory_api(request):
     raw_content = request.body
@@ -145,12 +161,17 @@ def delete_directory_api(request):
 
     try:
         directory = Directory.objects.get(pk=directorypk)
+        
+        if not directory.is_repository:
+            send_notifications(request.user, directory.repository, f"Directory  {directory.name} was deleted with its contents by {request.user.username}")
+
         directory.delete()
+
         return JsonResponse({"message": "directory deleted successfully"})
     except Directory.DoesNotExist:
         return JsonResponse({"message": f"primary key {directorypk} doesn't match any existing directory"}, status=400)
     except Exception as e:
-        return JsonResponse({"message": str(e)}, status=500)
+        return JsonResponse({"message": f"delete api got Error: {str(e)}"}, status=500)
 
 @login_required
 def delete_file_api(request):
@@ -160,13 +181,15 @@ def delete_file_api(request):
 
     try:
         file = FileModel.objects.get(pk=filepk)
+
+        send_notifications(request.user, file.repository, f"File {file.filename} was deleted by {request.user.username}") 
+
         file.delete()
         return JsonResponse({"message": "file deleted successfully"})
     except FileModel.DoesNotExist:
         return JsonResponse({"message": f"primary key {filepk} doesn't match any existing directory"}, status=400)
     except Exception as e:
         return JsonResponse({"message": str(e)}, status=500)
-
 
 def upload_file_api(request):
     try:
@@ -176,17 +199,20 @@ def upload_file_api(request):
     
         file_instance = FileModel.objects.create(parent=parent, file=file)
         file_instance.save()
+
+        send_notifications(request.user, file_instance.parent.repository, f"File {file_instance.filename} added by {request.user.username}")
+
         return JsonResponse({'message': 'File uploaded sucessfully'}, status=200)
     except Directory.DoesNotExist:
         return JsonResponse({'message': f'Parent directory with PRIMARY KEY: {parentpk} not found'}, status=400)
     except Exception as e:
-        print(e)
         return JsonResponse({'message': str(e)}, status=500)
 
 @login_required
 def new_comment(request):
 
     try:
+        #retreive repository
         raw_content = request.body
         loaded_content = json.loads(raw_content)
 
@@ -195,14 +221,16 @@ def new_comment(request):
 
         repository = Directory.objects.get(pk=int(repositorypk))
 
+        #create comment
         comment_instance = Comment.objects.create(comment=message, repository=repository, user=request.user)
         comment_instance.save()
+
+        send_notifications(request.user, repository, f"{request.user.username} commented")
 
         return JsonResponse({'message': "comment saved successfully"})
     except Directory.DoesNotExist:
         return JsonResponse({'message': f'directory with PRIMARY KEY: {repositorypk} not found'}, status=400)
     except Exception as e:
-        print(e)
         return JsonResponse({'message': str(e)}, status=500)
 
 def get_comments_api(request, repositorypk):
@@ -232,11 +260,9 @@ def login_view(request):
     else:
         return render(request, "palinodes/login.html")
 
-
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("login"))
-
 
 def register(request):
     if request.method == "POST":
