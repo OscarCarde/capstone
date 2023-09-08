@@ -6,16 +6,16 @@ from django.shortcuts import render, reverse
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 import json
-import re
+from .helpers import send_notifications
 
 from django.db import IntegrityError
 
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import User, Profile, Directory, FileModel, Comment, Notification
+from .models import User, Profile, Directory, FileModel, Comment
 from .forms import RepositoryForm, ProfileForm
-from .serializers import DirectorySerializer, FileSerializer, CommentSerializer
+from .serializers import DirectorySerializer, FileSerializer, CommentSerializer, NotificationSerializer
 
 #################__LANDING__########################
 
@@ -91,7 +91,12 @@ def repository_view(request, repository_id):
         return HttpResponseRedirect(reverse("dashboard"))
 
 ##################__APIS__##########################
-def directory_api(request, pk):
+def notifications_api(request):
+    notifications = request.user.notifications
+    serializer = NotificationSerializer(notifications, many=True)
+    return JsonResponse({"notifications": serializer.data})
+
+def directory_api(request, pk: int):
     try:
         directory = Directory.objects.get(pk=pk)
         directory_serializer = DirectorySerializer(directory)
@@ -116,7 +121,6 @@ def directory_api(request, pk):
     except Exception as e:
         return JsonResponse({"message": str(e)}, status=500)
     
-
 def new_directory_api(request):
     #get name and parent pk
     raw_content = request.body
@@ -131,11 +135,8 @@ def new_directory_api(request):
         new_directory.collaborators.set(parent.collaborators.all())
         new_directory.save()
 
-        repository = new_directory.repository
-        notification = Notification.objects.create(sender=request.user, repository=repository, message="new directory")
-        recipients = set(repository.collaborators) + {repository.owner} - {request.user}
-        notification.recipients.set(recipients)
-        notification.save()
+        send_notifications(request.user, new_directory.repository, f"Directory {name} added by {request.user.username}")
+        
 
         return JsonResponse({"message": "directory created successfully", "directory-pk": new_directory.pk}, status=200)
     except Directory.DoesNotExist:
@@ -143,7 +144,6 @@ def new_directory_api(request):
     except Exception as e:
         return JsonResponse({"message": str(e)}, status=500)
     
-
 @login_required
 def delete_directory_api(request):
     raw_content = request.body
@@ -152,12 +152,18 @@ def delete_directory_api(request):
 
     try:
         directory = Directory.objects.get(pk=directorypk)
+        
+        if not directory.is_repository:
+            send_notifications(request.user, directory.repository, f"Directory  {directory.name} was deleted with its contents by {request.user.username}")
+
         directory.delete()
+
         return JsonResponse({"message": "directory deleted successfully"})
     except Directory.DoesNotExist:
         return JsonResponse({"message": f"primary key {directorypk} doesn't match any existing directory"}, status=400)
     except Exception as e:
-        return JsonResponse({"message": str(e)}, status=500)
+        print(f"delete api got Error: {str(e)}")
+        return JsonResponse({"message": f"delete api got Error: {str(e)}"}, status=500)
 
 @login_required
 def delete_file_api(request):
@@ -167,6 +173,9 @@ def delete_file_api(request):
 
     try:
         file = FileModel.objects.get(pk=filepk)
+
+        send_notifications(request.user, file.repository, f"File {file.filename} was deleted by {request.user.username}") 
+
         file.delete()
         return JsonResponse({"message": "file deleted successfully"})
     except FileModel.DoesNotExist:
@@ -183,6 +192,9 @@ def upload_file_api(request):
     
         file_instance = FileModel.objects.create(parent=parent, file=file)
         file_instance.save()
+
+        send_notifications(request.user, file_instance.repository, f"File {file_instance.filename} added by {request.user.username}")
+
         return JsonResponse({'message': 'File uploaded sucessfully'}, status=200)
     except Directory.DoesNotExist:
         return JsonResponse({'message': f'Parent directory with PRIMARY KEY: {parentpk} not found'}, status=400)
@@ -204,6 +216,8 @@ def new_comment(request):
 
         comment_instance = Comment.objects.create(comment=message, repository=repository, user=request.user)
         comment_instance.save()
+
+        send_notifications(request.user, repository, f"{request.user.username} commented")
 
         return JsonResponse({'message': "comment saved successfully"})
     except Directory.DoesNotExist:
@@ -239,11 +253,9 @@ def login_view(request):
     else:
         return render(request, "palinodes/login.html")
 
-
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("login"))
-
 
 def register(request):
     if request.method == "POST":

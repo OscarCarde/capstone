@@ -5,13 +5,18 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.functional import cached_property
 
-from datetime import datetime, timezone
+from datetime import datetime
+
+###__helpers__###
+def get_avatar_path(instance, filename):
+    return f"{instance.user.id}/{filename}"
+
+def get_file_upload_path(instance, filename):
+    return f"{instance.parent.path}/{filename}"
+##################
 
 class User(AbstractUser):
     pass
-
-def get_avatar_path(instance, filename):
-    return f"{instance.user.id}/{filename}"
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
@@ -39,11 +44,7 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
     
-
-
 ####### Hierarchical directory structure ########
-def get_file_upload_path(instance, filename):
-        return f"{instance.parent.path}/{filename}"
 
 class Directory(models.Model):
     name = models.CharField(max_length=50)
@@ -54,10 +55,17 @@ class Directory(models.Model):
     parent = models.ForeignKey("self", blank=True, null=True, on_delete=models.CASCADE, related_name="subdirectories")
 
     @property
+    def latest_notification(self):
+        if self.is_repository:
+            return self.notifications.latest('timestamp')
+
+    @property
     def repository(self):
-        #TODO
-        pass
-    
+        if self.is_repository:
+            return self
+        else:
+            return self.parent.repository
+
     @property
     def number_of_collaborators(self):
         return self.collaborators.count()
@@ -105,14 +113,6 @@ class FileModel(models.Model):
     uploaded = models.DateTimeField(auto_now_add=True)
 
     @property
-    def repository(self):
-    #TODO
-        if self.parent.is_repository:
-            return self.parent
-        else:
-            return self.repository(self.parent)
-
-    @property
     def filename(self):
         return os.path.basename(self.file.name)
     
@@ -152,7 +152,5 @@ class Notification(models.Model):
     recipients = models.ManyToManyField(User, blank=True, related_name="notifications")
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    def save(self, *args, **kwargs):
-        if self.recipients.exists():
-            super(Notification, self).save(*args, **kwargs)
-        
+    def __str__(self):
+        return self.message + f" on {self.timestamp}"
