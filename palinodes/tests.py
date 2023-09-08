@@ -45,7 +45,6 @@ class DirectoryTestCase(TestCase):
         self.repo.refresh_from_db()
         self.assertAlmostEqual(now, self.repo.last_edited, delta=tolerance, msg="last_edited property failed at subdirectory level")
 
-
 class FileTestCase(TestCase):
     '''
         Text fixture for File model
@@ -73,6 +72,35 @@ class FileTestCase(TestCase):
     def test_is_audiofile(self):
         self.assertEquals(True, self.file1.is_audiofile, f"is_audiofile should return True but returns {self.file1.is_audiofile}")
 
+class ProfileTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(id=1000, username = "Alice")
+        self.profile = Profile.objects.create(user=self.user, description="A test user profile")
+
+        self.repo1 = Directory.objects.create(pk=1000, name="test repo1", owner = self.user, description="1 Test Repository", created= datetime.now(timezone.utc) - timedelta(days=1))
+
+        self.repo2 = Directory.objects.create(pk=2000, name="test repo2", owner = self.user, description="2 Test Repository", created= datetime.now(timezone.utc) - timedelta(days=2))
+
+        self.repo3 = Directory.objects.create(pk=3000, name="test repo3", owner = self.user, description="3 Test Repository", created= datetime.now(timezone.utc) - timedelta(days=3))
+
+        self.dir1 = Directory.objects.create(pk=4000, parent=self.repo2, name="test dir1", owner = self.user, description="1 Test Repository", created= datetime.now(timezone.utc))
+
+
+    def test_repositories(self):
+
+        actual_repositories = [repository.pk for repository in self.profile.repositories]
+        self.assertListEqual([2000, 3000, 1000], actual_repositories, "the profile's repositories don't match")
+
+    def test_collaborating_repositories(self):
+        self.profile.refresh_from_db()
+
+        actual_repositories = [repository.pk for repository in self.profile.all_repositories]
+        self.assertListEqual([2000, 3000, 1000], actual_repositories, "the profile's repositories don't match")
+
+class NotificationTestCase(TestCase):
+    #TODO
+    pass
+
 class RepositorySerializerTestCase(TestCase):
     def setUp(self) -> None:
         self.user1 = User.objects.create(id=1000, username = "Alice")
@@ -95,35 +123,8 @@ class RepositorySerializerTestCase(TestCase):
 
     def test_serializer_collaborators(self):
         self.assertListEqual(['Bob', 'Claire'], self.serializer.data["collaborators_names"], "The repository's collaborators' names don't match")
-    
-class ProfileTestCase(TestCase):
-    def setUp(self):
-        self.user = User.objects.create(id=1000, username = "Alice")
-        self.profile = Profile.objects.create(user=self.user, description="A test user profile")
 
-        self.repo1 = Directory.objects.create(pk=1000, name="test repo1", owner = self.user, description="1 Test Repository", created= datetime.now(timezone.utc) - timedelta(days=1))
-
-        self.repo2 = Directory.objects.create(pk=2000, name="test repo2", owner = self.user, description="2 Test Repository", created= datetime.now(timezone.utc) - timedelta(days=2))
-
-        self.repo3 = Directory.objects.create(pk=3000, name="test repo3", owner = self.user, description="3 Test Repository", created= datetime.now(timezone.utc) - timedelta(days=3))
-
-        self.dir1 = Directory.objects.create(pk=4000, parent=self.repo2, name="test dir1", owner = self.user, description="1 Test Repository", created= datetime.now(timezone.utc))
-
-
-    def test_repositories(self):
-
-        actual_repositories = [repository.pk for repository in self.profile.repositories]
-        print(actual_repositories)
-        self.assertListEqual([2000, 1000, 3000], actual_repositories, "the profile's repositories don't match")
-
-    def test_collaborating_repositories(self):
-        self.profile.refresh_from_db()
-
-        actual_repositories = [repository.pk for repository in self.profile.all_repositories]
-        print(actual_repositories)
-        self.assertListEqual([2000, 1000, 3000], actual_repositories, "the profile's repositories don't match")
-
-
+####__apis_tests__####
 class DirectoryApiTestCase(TestCase):
     '''tests for the directory_api in views.py'''
     def setUp(self):
@@ -157,13 +158,17 @@ class NewDirectoryApiTestCase(TestCase):
         
     def test_new_directory(self):
         c = Client()
-        c.login(username= self.user.username, password="1234")
+        c.force_login(self.user)
         response = c.post("/new-directory", {"name": "test subsubdir", "parent_pk": self.dir1.pk}, content_type="application/json")
-        self.assertEquals(200, response.status_code)
+        self.assertEquals(200, response.status_code, f"wrong status code, api failed to save new directory, instead gave:\n {response.json()['message']}")
         directory = Directory.objects.get(name="test subsubdir")
         if directory:
             directory.delete()
         c.logout()
+
+class DeleteDirectoryApiTestCase(TestCase):
+    #TODO
+    pass
 
 class NewFileApiTestCase(TestCase):
     def setUp(self) -> None:
@@ -174,12 +179,28 @@ class NewFileApiTestCase(TestCase):
     
     def test_file_upload(self):
         c = Client()
-        c.login(username="Alice", password="1234")
+        c.force_login(self.user)
         with open("palinodes/testFiles/codine.mp3", 'rb') as file:
             response = c.post("/new-file", {"file": file, "parentpk": self.dir.pk})
-        self.assertEquals(200, response.status_code)
+        self.assertEquals(200, response.status_code, response.json()["message"])
         instance = FileModel.objects.get(parent=self.dir)
         self.assertIsNotNone(instance, "instance not saved")
         if instance:
             instance.delete()
         c.logout()
+
+class DeleteFileApiTestCase(TestCase):
+    #TODO
+    pass
+
+class NotificationsApiTestCase(TestCase):
+    #TODO
+    pass
+
+class NewCommentApiTestCase(TestCase):
+    #TODO
+    pass
+
+class GetCommentsApiTestCase(TestCase):
+    #TODO
+    pass

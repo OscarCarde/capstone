@@ -151,7 +151,7 @@ def new_directory_api(request):
     except Directory.DoesNotExist:
         return JsonResponse({"message": f"directory with primary key {parent_pk} does not exist"}, status=400)
     except Exception as e:
-        return JsonResponse({"message": str(e)}, status=500)
+        return JsonResponse({"message":f"{str(e)} \n user: {request.user.username}"}, status=500)
     
 @login_required
 def delete_directory_api(request):
@@ -171,7 +171,6 @@ def delete_directory_api(request):
     except Directory.DoesNotExist:
         return JsonResponse({"message": f"primary key {directorypk} doesn't match any existing directory"}, status=400)
     except Exception as e:
-        print(f"delete api got Error: {str(e)}")
         return JsonResponse({"message": f"delete api got Error: {str(e)}"}, status=500)
 
 @login_required
@@ -192,7 +191,6 @@ def delete_file_api(request):
     except Exception as e:
         return JsonResponse({"message": str(e)}, status=500)
 
-
 def upload_file_api(request):
     try:
         file = request.FILES.get('file')
@@ -202,19 +200,19 @@ def upload_file_api(request):
         file_instance = FileModel.objects.create(parent=parent, file=file)
         file_instance.save()
 
-        send_notifications(request.user, file_instance.repository, f"File {file_instance.filename} added by {request.user.username}")
+        send_notifications(request.user, file_instance.parent.repository, f"File {file_instance.filename} added by {request.user.username}")
 
         return JsonResponse({'message': 'File uploaded sucessfully'}, status=200)
     except Directory.DoesNotExist:
         return JsonResponse({'message': f'Parent directory with PRIMARY KEY: {parentpk} not found'}, status=400)
     except Exception as e:
-        print(e)
         return JsonResponse({'message': str(e)}, status=500)
 
 @login_required
 def new_comment(request):
 
     try:
+        #retreive repository
         raw_content = request.body
         loaded_content = json.loads(raw_content)
 
@@ -223,6 +221,7 @@ def new_comment(request):
 
         repository = Directory.objects.get(pk=int(repositorypk))
 
+        #create comment
         comment_instance = Comment.objects.create(comment=message, repository=repository, user=request.user)
         comment_instance.save()
 
@@ -232,7 +231,6 @@ def new_comment(request):
     except Directory.DoesNotExist:
         return JsonResponse({'message': f'directory with PRIMARY KEY: {repositorypk} not found'}, status=400)
     except Exception as e:
-        print(e)
         return JsonResponse({'message': str(e)}, status=500)
 
 def get_comments_api(request, repositorypk):
