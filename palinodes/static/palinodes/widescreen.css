@@ -313,6 +313,34 @@ button {
             overflow-y: scroll;
         }
 
+            #collaborators-header {
+                display: flex;
+                justify-content: center;
+                align-items: flex-end;
+            }
+
+            #collaborators-header button{
+                display: none;
+                align-self: flex-start;
+                margin-left: auto;
+                margin-top: 0px;
+            }
+
+            .collaborator-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .collaborator-container p {
+                margin: 5px 5px;
+            }
+
+            .remove-collaborator {
+                display: none;
+                margin: 0px 0px 0px auto;
+            }
+
         #repository-settings {
             display: flex;
             align-items: center;
@@ -323,7 +351,7 @@ button {
         }
 
         #repository-details form {
-            grid-area: 1 / 1 / span 2 / span 2;
+            grid-area: 1 / 1 / span 2 / span 1;
             display: flex;
             flex-direction: column;
             align-items: center;    

@@ -33,25 +33,24 @@
 
 - [x] Responsive: The website should display an interface appropriate the the device it is viewed on
 
-- [ ] Notifications: the Dashboard should display a notification on each repository with a new message or file uploaded
+- [x] Notifications: the Dashboard should display a notification on each repository with a new message or file uploaded
 
 - [ ] Project View:
   - [x] The owner and collaborating users can create directories,
   - [x] they can upload files in the desired location in their repository,
   - [x] delete files 
   - [x] delete folders with all their contents,
-  - [ ] move their files to a different directory
   - [x] and add multiple collaborators (musicians) (((who can be invited via email))).
   - [ ] Only the owner can remove collaborators
-  - [ ] The owner can transfer ownership to another user
-  - [ ] The Owner can delete the project and is redirected to his dashboard when doing so
+  - [x] The Owner can delete the project and is redirected to his dashboard when doing so
+  - [ ] Collaborating users should be able to leave a repository
 
-  (((
-  - [ ] User Permissions and Access Control:
-    - [ ] Different levels of access for collaborators (e.g., read-only, read-write).
-    - [ ] Project owners can manage collaborators and their permissions.
-  )))
+- [ ] Invite: Users should be able to add collaborators to a repository
+  - [ ] Only non collaborating users should be invitable
+  - [ ] 
   
+
+
 - [ ] **Additional Features:**
   - [ ] Search and Discovery:
     - [ ] Search functionality to find public projects based on keywords or tags.
