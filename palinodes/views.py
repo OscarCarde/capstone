@@ -53,7 +53,15 @@ class CreateRepository(LoginRequiredMixin, CreateView):
         # Use reverse to generate the URL using the model's id
         return reverse("repository", args=[str(self.object.id)])
 
+@login_required
+def repository_settings(request, repositorypk):
 
+    repository = Directory.objects.get(pk=repositorypk)
+
+    return render(request, "palinodes/settings.html", {
+        "form": RepositoryForm, "repository": repository
+    })
+    
 @login_required
 def repository_view(request, repository_id):
     repository = Directory.objects.get(id=repository_id)

@@ -1,0 +1,67 @@
+{% extends 'palinodes/layout.html' %}
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href={% static 'palinodes/settings.css' %}>
+{% endblock stylesheet %}
+
+{% block title %}
+{{repository.name}}
+{% endblock title %}
+
+{% block script %}
+<script type="module" src={% static 'palinodes/settings.js' %}></script>
+{% endblock %}
+
+{% block body %}
+<div id="settings-container">
+    <div id="back">
+        <a id="back-link" class="bordered clickable" href={% url 'repository' repository.id %}>Back</a>
+    </div>
+    <div id="settings-form-container">
+        <h3>{{repository.name}}</h3>
+        <form id="details-form" data-pk="{{repository.pk}}" data-name="{{repository.name}}" data-description="{{repository.description}}"  method="post">
+            {% csrf_token %}
+            <div>
+                <label for="id_name">Name</label>
+                {{form.name}}
+            </div>
+            <div>
+                <label for="id_description">About</label>
+                {{form.description}}
+            </div>
+            <div id="form-btns-container">
+                <input class="bordered clickable" type="submit" value="Save">
+                {% if  repository.owner == user %}
+                <button class="bordered clickable" type="button" id="delete-repository">Delete</button>
+                {% else %}
+                <button class="bordered clickable" type="button" id="leave-repository">Leave</button>
+                {% endif %}
+            </div>
+        </form>
+        <div id="collaborators-form">
+            <form id="search-form">
+                <label for="input-search">Add Collaborators</label>
+                <input id="input-search" class="bordered clickable" type="text">
+            </form>
+            <div id="current-collaborators-list">
+                {% for collaborator in repository.collaborators.all %}
+                <div class="current-collaborator-container bordered">
+                    {% if collaborator.profile.avatar %}
+                    <img class="avatar-sm" src="{{collaborator.profile.avatar.url}}" alt="">
+                    {% else %}
+                    <img class="avatar-sm" src="{{MEDIA_URL}}/media/Default-Profile-Picture.png" alt="">
+                    {% endif %}
+                    <p>{{collaborator.username}}</p>
+                    <button class="remove-collaborator clickable" data-collaborator="{{collaborator.pk}}">
+                        <img src="{{MEDIA_URL}}/media/icons/dash.svg" alt="">
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}
+
+

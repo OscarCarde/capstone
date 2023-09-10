@@ -1,0 +1,123 @@
+#settings-container{
+    padding-top: 20px;
+    grid-column: 1 / span 3;
+    grid-row: 1 / span 2;
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-rows: 1fr auto 1fr;
+
+    background-color: #101010;
+}
+
+#back {
+    grid-area: 1 / 1 / span 1 / span 1;
+    margin: 10px;
+}
+
+    #back-link {
+        padding: 5px 10px;
+    }
+
+#settings-form-container {
+    grid-area: 2 / 2 / span 1 / span 1;
+
+    display: grid;
+    grid-template-rows: 1fr 4fr 4fr 2fr;
+
+}
+    h3 {
+        padding: 10px;
+        grid-row: 1 / span 1;
+        border-bottom: solid #ffffff88;
+        border-width: 1px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        margin: 20px;
+    }
+
+    #details-form {
+        grid-row: 2 / span 1;
+    }
+
+        #details-form div {
+            display: flex;
+            align-items: center;
+        }
+
+
+            #id_description {
+                font-size: medium;
+                height: 100px;
+                background-color: #101010;
+
+            }
+
+            #id_name {
+                font-size: medium;
+                height: 17px;
+                background-color: #101010;
+            }
+
+            #form-btns-container {
+                margin-top: 10px;
+                display: flex;
+            }
+
+                #delete-repository {
+                    margin: 0px 20px;
+                    height: fit-content;
+                    width: 80px;
+                    background-color: red;
+                }
+
+        input[type="submit"] {
+            margin: 0px 20px;
+            width: 80px;
+        }
+
+    #collaborators-form {
+        grid-row: 3 / span 1;
+        border: solid #ffffff88;
+        border-radius: 10px;
+        border-width: 1px;
+        height: fit-content;
+        display:flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #input-search {
+        height: 30px;
+        width: 300px;
+        background-color: black;
+        color: white;
+    }   
+
+    label {
+        align-self: center;
+        margin: 10px 0px;
+    }
+
+    #current-collaborators-list {
+        width: 100%;
+        align-self: stretch;
+
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        height:fit-content;
+    }
+    .current-collaborator-container{    
+        margin-bottom: 20px;
+        padding: 10px;
+        display: flex;
+        flex-basis: 400px;
+    }
+
+    .remove-collaborator {
+        margin: 0px 0px 0px auto;
+        background-color: #101010;
+    }
