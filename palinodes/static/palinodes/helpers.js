@@ -2,13 +2,9 @@ const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
 
 export async function searchUsers(value) {
     //retreive first 10 users that have the substring value
-    await fetch(`search-collaborators/${value}`)
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-    })
-
-    console.log(value);
+    const response = await fetch(`search-collaborators/${value}`);
+    const data = await response.json();
+    return data.users;
 }
 
 export function removeCollaborator(collaboratorpk, repositorypk) {
