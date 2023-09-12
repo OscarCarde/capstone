@@ -1,13 +1,47 @@
 {% extends 'palinodes/layout.html' %}
+{% load static %}
 
-{% block navbar %}
-<li><a href={% url 'dashboard' %}>Dashboard</a></li>
-{% endblock navbar %}
+{% block stylesheet %}
+<link rel="stylesheet" href={% static 'palinodes/settings.css' %}>
+{% endblock stylesheet %}
+
+{% block title %}
+New Repository
+{% endblock title %}
 
 {% block body %}
-    <h2>New Repository</h2>
-    <form id="new-repository-form" method="post">{% csrf_token %}
-        {{form}}
-        <input class="clickable bordered" id="id_submit" type="submit" value="Save">
-    </form>
+<div id="search-form-modal">
+    <div class="bordered" id="search-form-container">
+        <form id="search-form">
+            <label for="input-search">Add Collaborators</label>
+            <input id="input-search" class="bordered clickable" type="text" placeholder="Search by username">
+        </form>
+        <div class="collaborators-list" id="user-search-results-container">
+        </div>
+    </div>
+</div>
+<div id="settings-container">
+    <div id="back">
+        <a id="back-link" class="bordered clickable" href={% url 'dashboard' %}>Back</a>
+    </div>
+    <div id="settings-form-container">
+        <h3>New Repository</h3>
+        <form id="details-form" method="post">
+            {% csrf_token %}
+            <div>
+                <label for="id_name">Name</label>
+                {{form.name}}
+            </div>
+            <div>
+                <label for="id_description">About</label>
+                {{form.description}}
+            </div>
+            <div id="form-btns-container">
+                <input class="bordered clickable" type="submit" value="Save">
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock body %}
+
+
