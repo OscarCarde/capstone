@@ -2,11 +2,43 @@ import json
 
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 from palinodes.helpers import send_notifications
 
 from .models import Directory, User, FileModel, Comment
-from .serializers import CommentSerializer, NotificationSerializer, DirectorySerializer, FileSerializer
+from .serializers import CommentSerializer, NotificationSerializer, DirectorySerializer, FileSerializer, UserSerializer
+
+@login_required
+def add_collaborator_api(request):
+    raw_content = request.body
+    loaded_content = json.loads(raw_content)
+    new_collaboratorpk = loaded_content.get("newCollaboratorpk")
+    repositorypk = loaded_content.get("repositorypk")
+
+    try:
+        repository = Directory.objects.get(pk=repositorypk)
+        new_collaborator = User.objects.get(pk=new_collaboratorpk)
+
+        repository.collaborators.add(new_collaborator)
+
+        return JsonResponse({"message": "user added successfully"}, status=200)
+    
+    except Exception as e:
+        return JsonResponse({"message": str(e)})
+
+def search_collaborators_api(request, substring):
+
+    try:
+        matched = User.objects.filter(Q(username__startswith=substring))
+
+        serializer = UserSerializer(matched, many=True)
+
+        return JsonResponse({"message":"request successful", "users": serializer.data}, status=200)
+    except Exception as e:
+        return JsonResponse({"message": str(e)}, status=500)
+
+
 
 @login_required
 def remove_collaborator_api(request, repositorypk):

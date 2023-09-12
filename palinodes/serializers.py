@@ -1,5 +1,19 @@
 from rest_framework import serializers
-from .models import Directory, FileModel, Comment, Notification
+from .models import Directory, FileModel, Comment, Notification, User
+from django.conf import settings
+
+class UserSerializer(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField()
+
+    def get_avatar(self, obj):
+        if obj.profile.avatar:
+            return obj.profile.avatar.url
+        else:
+            return None
+
+    class Meta:
+        model=User
+        fields=['pk', 'username', 'avatar']
 
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:

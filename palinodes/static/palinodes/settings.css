@@ -142,6 +142,8 @@
     .collaborators-list {
         width: 100%;
         display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
         height:fit-content;
         overflow-y: scroll;
     }
@@ -156,10 +158,14 @@
         margin-bottom: 20px;
         padding: 10px;
         display: flex;
+        align-items: center;
         flex-basis: 400px;
     }
 
-    .remove-collaborator {
+    .toggle-collaborator {
         margin: 0px 0px 0px auto;
-        background-color: #101010;
     }
+    .remove-collaborator {
+        background-color: #101010;
+    }   
+

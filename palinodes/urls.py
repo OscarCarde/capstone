@@ -10,6 +10,8 @@ urlpatterns = [
     path("repository/<int:repository_id>", views.repository_view, name="repository"),
     path("repository/<int:repositorypk>/settings", views.repository_settings, name="settings"),
     #API urls
+    path("add-collaborator", apis.add_collaborator_api, name="add-collaborator"),
+    path("search-collaborators/<str:substring>", apis.search_collaborators_api, name="search-collaborator"),
     path("notifications", apis.notifications_api, name="notifications"),
     path("directory/<int:pk>", apis.directory_api, name="directory"),
     path("repository/<int:repositorypk>/comments", apis.get_comments_api, name="comments"),

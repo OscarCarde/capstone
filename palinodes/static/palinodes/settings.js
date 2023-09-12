@@ -1,4 +1,5 @@
-import { searchUsers, removeCollaborator, deleteDirectory, hello } from "./helpers.js";
+import { addCollaborator, removeCollaborator, deleteDirectory, hello } from "./helpers.js";
+var repositorypk;
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -7,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const detailsForm = document.querySelector("#details-form");
     const repositoryName = detailsForm.dataset.name;
     const repositoryDescription = detailsForm.dataset.description;
-    const repositorypk = detailsForm.dataset.pk;
+    repositorypk = detailsForm.dataset.pk;
     detailsForm.querySelector("#id_name").value = repositoryName;
     detailsForm.querySelector("#id_description").value = repositoryDescription;
 
@@ -39,24 +40,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    var addCollaboratorInput = document.querySelector("#input-search");
-    addCollaboratorInput.addEventListener("input", () => {
-        let text = addCollaboratorInput.value;
-        let users = searchUsers(text);
-        let usersListContainer = document.querySelector("#user-search-results-container");
-        if(users != null) {
-            users.forEach(user => {
+    var inputSearch = document.querySelector("#input-search");
+    inputSearch.addEventListener("input", () => {
+        let text = inputSearch.value;
+        searchUsers(text);
+    })
+})
+
+async function searchUsers(value) {
+    var usersListContainer = document.querySelector("#user-search-results-container");
+    usersListContainer.replaceChildren();
+    if(value != "") {
+        //retreive first 10 users that have the substring value
+        await fetch(`/search-collaborators/${value}`)
+        .then(response => response.json())
+        .then(data => {
+            data.users.forEach(user => {
                 let userContainer = document.querySelector("#user-container-template").cloneNode(true);
                 //set user's profile picture
-                userContainer.querySelector(".avatar-sm").setAttribute("src", user.avatar);
+                if(user.avatar != null) {
+                    userContainer.querySelector(".avatar-sm").setAttribute("src", user.avatar);
+                }
                 //set user's name
-                userContainer.querySelector("p").innerHTML = user.username;
-                userContainer.querySelector("button").setAttribute("data-collaborator", user.pk);
+                userContainer.querySelector(".collaborator-username").innerHTML = user.username;
+
+                userContainer.style.display = "flex";
+                userContainer.id = "";
+                usersListContainer.append(userContainer);
+
+                userContainer.addEventListener("click", () => {
+                    addCollaborator(user.pk, repositorypk);
+                })
             })
-            
-        }
-        
-
-    });
-
-})
+        });
+    }
+}

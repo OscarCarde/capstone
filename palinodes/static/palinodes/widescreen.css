@@ -326,16 +326,6 @@ button {
                 margin-top: 0px;
             }
 
-            #add-collaborator-modal {
-                display: none; /* Hidden by default */
-                position: fixed;
-                z-index: 1;
-                width: 100%; 
-                height: 100%; /* Full height */
-                overflow: auto; /* Enable scroll if needed */
-                background-color: transparent; /* Fallback color */
-            }
-
             .collaborator-container {
                 display: flex;
                 justify-content: center;

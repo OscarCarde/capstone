@@ -59,8 +59,8 @@
                     {% else %}
                     <img class="avatar-sm" src="{{MEDIA_URL}}/media/Default-Profile-Picture.png" alt="">
                     {% endif %}
-                    <p>{{collaborator.username}}</p>
-                    <button class="remove-collaborator clickable" data-collaborator="{{collaborator.pk}}">
+                    <p class="collaborator-username">{{collaborator.username}}</p>
+                    <button class="toggle-collaborator remove-collaborator clickable" data-collaborator="{{collaborator.pk}}">
                         <img src="{{MEDIA_URL}}/media/icons/dash.svg" alt="">
                     </button>
                 </div>
@@ -69,12 +69,10 @@
         </div>
     </div>
 </div>
-<div style="display: none" id="user-container-template" class="current-collaborator-container bordered">
+<div style="display: none" id="user-container-template" class="current-collaborator-container bordered clickable">
     <img class="avatar-sm" src="{{MEDIA_URL}}/media/Default-Profile-Picture.png" alt="">
-    <p></p>
-    <button class="remove-collaborator clickable" data-collaborator="">
-        <img src="{{MEDIA_URL}}/media/icons/dash.svg" alt="remove collaborator">
-    </button>
+    <p class="collaborator-username"></p>
+    <p class="toggle-collaborator" data-collaborator="">add</p>
 </div>
 {% endblock body %}
 
