@@ -1,5 +1,6 @@
 //import WaveSurfer from '/static/palinodes/node_modules/wavesurfer.js/dist/wavesurfer.js';
 import WaveSurfer from 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js'
+import { deleteDirectory, deleteFile } from './helpers.js';
 
 const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
 const user = document.querySelector("#loggedin-user").dataset.username;
@@ -31,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    let repositorypk = document.querySelector("#contents").dataset.pk;
+    const repositorypk = document.querySelector("#contents").dataset.pk;
     //LOAD CONTENTS
     loadDirectoryContents(repositorypk);
 
@@ -55,72 +56,12 @@ document.addEventListener('DOMContentLoaded', function() {
             })
         })
     }
-
-    //SETTINGS
-    var details = document.querySelector("#repository-details");
-    var repositoryForm = details.querySelector("form");
-
-    //DELETE REPOSITORY
-    repositoryForm.querySelector("#delete-repository").onclick = () => {
-        deleteDirectory(repositorypk);
-        window.location.href = "/dashboard";
-    }
-
-    //CANCEL EDIT
-    repositoryForm.querySelector("#cancel-edit").onclick = () => {
-        details.querySelector("#repository-settings").style.display = "flex";
-        details.querySelector("#repository-details-details").style.display = 'flex';
-        details.querySelector("#repository-details-collaborators").style.display = 'block';
-        details.querySelector("form").style.display = "none";
-    }
-
-    //EDIT FORM HANDLING
-    document.querySelector("#repository-settings").addEventListener('click', () => {
-        details.querySelector("#repository-settings").style.display = "none";
-        details.querySelector("#repository-details-details").style.display = "none";
-        details.querySelector("#repository-details-collaborators").style.display = 'none';
-        
-        repositoryForm.style.display = "block";
-        
-        repositoryForm.querySelector("#id_name").value = details.dataset.name;
-        repositoryForm.querySelector("#id_description").value = details.dataset.description;
-        repositoryForm.querySelector("#id_collaborators").value = details.dataset.collaborators;
-        
-    })
+    
 });
 
-async function deleteDirectory(pk) {
-    fetch("/delete-directory", {
-        method: 'POST',
-        headers: {
-            'ContentType': "application/json",
-            'X-CSRFToken': csrftoken,
-        },
-        body: JSON.stringify({
-            'directorypk': pk,
-        })
 
-    })
-}
 
-async function deleteFile(pk) {
-    await fetch("/delete-file", {
-        method: 'POST',
-        headers: {
-            'ContentType': "application/json",
-            'X-CSRFToken': csrftoken,
-        },
-        body: JSON.stringify({
-            'filepk': pk,
-        })
-        
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data.message);  
-    })
-    
-}
+
 
 async function loadChat(repositorypk) {
     fetch(`/repository/${repositorypk}/comments`)

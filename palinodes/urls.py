@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from . import apis
 from .views import CreateRepository
 
 urlpatterns = [
@@ -7,15 +8,19 @@ urlpatterns = [
     path("dashboard", views.dashboard, name="dashboard"),
     path("new-repository", CreateRepository.as_view(), name="new-repository"),
     path("repository/<int:repository_id>", views.repository_view, name="repository"),
+    path("repository/<int:repositorypk>/settings", views.repository_settings, name="settings"),
     #API urls
-    path("notifications", views.notifications_api, name="notifications"),
-    path("directory/<int:pk>", views.directory_api, name="directory"),
-    path("repository/<int:repositorypk>/comments", views.get_comments_api, name="comments"),
-    path("new-directory", views.new_directory_api, name="new-directory"),
-    path("new-file", views.upload_file_api, name="new-file"),
-    path("new-comment", views.new_comment, name="new-comment"),
-    path("delete-directory", views.delete_directory_api, name="delete-directory"),
-    path("delete-file", views.delete_file_api, name="delete-file"),
+    path("add-collaborator", apis.add_collaborator_api, name="add-collaborator"),
+    path("search-collaborators/<str:substring>", apis.search_collaborators_api, name="search-collaborator"),
+    path("notifications", apis.notifications_api, name="notifications"),
+    path("directory/<int:pk>", apis.directory_api, name="directory"),
+    path("repository/<int:repositorypk>/comments", apis.get_comments_api, name="comments"),
+    path("new-directory", apis.new_directory_api, name="new-directory"),
+    path("new-file", apis.upload_file_api, name="new-file"),
+    path("new-comment", apis.new_comment, name="new-comment"),
+    path("delete-directory", apis.delete_directory_api, name="delete-directory"),
+    path("delete-file", apis.delete_file_api, name="delete-file"),
+    path("remove-collaborator/<int:repositorypk>", apis.remove_collaborator_api, name="remove_collaborator"),
     #Login urls
     path("login", views.login_view, name="login"),
     path("register", views.register, name="register"),
