@@ -324,7 +324,7 @@ button {
                 align-self: flex-start;
                 margin-left: auto;
                 margin-top: 0px;
-            }
+            }           
 
             .collaborator-container {
                 display: flex;
@@ -437,16 +437,18 @@ button {
     #soundwave {
         background-color: #1f1f1f;
         grid-area: 1 / 2 / span 1 / span 1;
-
+        height: 100%;
+        overflow-y: scroll;
         display:flex;
         flex-direction: column;
         justify-content: center;
     }
 
-    audio {
-        margin-top: 50px;
-    }
-
+        #soundwave ::part(scroll) {
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+        
     #chat-container {
         background-color: #1f1f1f;
         grid-area: 2 / 2 / span 1 / span 1;

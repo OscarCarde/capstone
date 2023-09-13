@@ -6,7 +6,6 @@ const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
 const user = document.querySelector("#loggedin-user").dataset.username;
 
 document.addEventListener('DOMContentLoaded', function() {
-
     //NEW DIRECTORY FORM
     let newDirectory = document.querySelector("#new-directory");
     newDirectory.addEventListener('click', () => {
@@ -64,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 async function loadChat(repositorypk) {
+    console.log(user);
     fetch(`/repository/${repositorypk}/comments`)
     .then(response => response.json())
     .then(data => {
@@ -72,6 +72,7 @@ async function loadChat(repositorypk) {
         var commentTemplateSelf = document.querySelector("#comment-template-self");
 
         data.comments.forEach(comment => {
+            console.log(comment.username);
             if(comment.username != user) {
                 var commentContainer = commentTemplate.cloneNode(true);
                 commentContainer.querySelector(".commenter").innerHTML = comment.username;
@@ -234,9 +235,10 @@ async function loadDirectoryContents(directory_pk) {
             filename.innerHTML = file.filename;
 
             if(file.is_audiofile){
+                var soundwave = document.querySelector("#soundwave")
                 var hiddenfileIcon = document.querySelector("#audiofile-icon");
                 filename.addEventListener('click', () => {
-                    document.querySelector("#soundwave").replaceChildren();
+                    soundwave.replaceChildren();
                     wavesurfer = WaveSurfer.create({
                         container: '#soundwave',
                         waveColor: '#ffffff',
