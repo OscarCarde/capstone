@@ -10,6 +10,16 @@ from .models import Directory, User, FileModel, Comment
 from .serializers import CommentSerializer, NotificationSerializer, DirectorySerializer, FileSerializer, UserSerializer
 
 @login_required
+def leave_repository_api(request, repositorypk):
+    try:
+        repository = Directory.objects.get(pk=repositorypk)
+        repository.collaborators.remove(request.user)
+
+        return JsonResponse({"message": "User removed from collaboators successfully"}, status=200)
+    except Exception as e:
+        return JsonResponse({"message": str(e)}, status=500)
+
+@login_required
 def add_collaborator_api(request):
     raw_content = request.body
     loaded_content = json.loads(raw_content)

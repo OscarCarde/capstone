@@ -1,194 +1,47 @@
-body {
-    margin:0;
-    padding:0;
-    background-color: black;
-    color: rgb(217, 217, 217);
-    text-decoration: none;
-    font-family:sans-serif;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-}
-
-* {
-    /*border: dashed;*/
-    border-color: red;
-}
-
-a {
-    text-decoration: none;
-    color: #457CE8;
-    font-weight:bold;
-    font-size: larger;
-}
-
-ul {
-    list-style-type: none;
-}
-
-img {
-    object-fit: contain;
-}
-
-button {
-    border: none;
-    margin-top: 20px;
-    padding: 8px;
-    color: white;
-    font-size: large;
-    background-color: #323338;
-}
-
-.bordered {
-    border: solid;
-    border-color: #88959c88;
-    border-width: 1px;
-    border-radius: 7px;
-}
-
-.clickable:hover {
-    background-color: #88959c88;
-    border-color: #ffffff;
-    cursor: pointer;
-}
-
-.clickable:active {
-    background-color: rgb(37, 44, 45);
-    border-color: rgb(37, 44, 45);
-}
-
-.link-layer {
-    flex:1;
-    position: absolute;
-    width: 400px;
-    height: 92%;
-    
-}
-
-#top-navbar {
-    margin: 1px;
-    padding-bottom:2px;
-    background-color: black;
-    width: 95%;
-    height: 50px;
-}
-
-    #top-navbar ul {
-        margin-left: 100px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-        #dash-btn {
-            display: flex;
-            align-items: center;
-        }
 
 #body-block {
-    padding:0px;
-    margin:0px;
-    display: grid;
-    height:100%;
-    width: 100vw;
     grid-template-columns: 2fr 4fr auto;
-    overflow: scroll;
-    overflow-x: hidden;
 }
 
     #profile-banner {
-        background-color: #1f1f1f;
         grid-column: 1 / span 1;
+
         margin-left: 0px;
         margin-top: 0px;
         padding-left: 20px;
-        display: flex;
+
         flex-direction: column;
-        justify-content: center;
     }
-        .profile {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
 
             input[type="file"]{
-                border: none;
-                padding: 10px;
-                color: white;
                 font-size: large;
             }
 
-            input[value="Save"] {
-                background-color: green;
-                border: none;
-                margin-top: 20px;
-                padding: 8px;
-                color: white;
-                font-size: large;
-            }
-
-            label {
-                align-self: flex-start;
-            }
-            input[value="Save"]:hover {
-                background-color: #00bb00;
-            }
-            input[value="Save"]:active {
-                background-color: green;
-            }
+            
 
 
         #avatar {
             width: 300px;
             height: 300px;
-            border-radius: 90%;
-            background-color: #323338;
         }
 
         .avatar-sm {
             margin-right: 40px;
-            width: 50px;
-            height: 50px;
-            border-radius: 90%;
-            background-color: #323338;
         }
 
 
     #repositories-list {
         grid-column: 2 / span 1;
         padding-right: 20px;
-        display: flex;
-        flex-direction: column;
     }
-        #repositories-list ul {
-            display: flex;
-            justify-content: space-around;
-        }
 
             #repositories-list ul li {
-                display: block;
-                position: relative;
                 width: 150px;
-                padding: 10px;
-                text-align: center;
-            }
-
-            #new-repository-icn {
-                align-self: center;
-                border-radius: 90%;
-            }
-
-            #new-repository-icn:hover {
-                border: solid;
             }
 
     #repositories-container {
         margin: 20px auto auto 20px;
         align-self: center;
-        width: 100%;
-        display: flex;
         justify-content: baseline;
         flex-wrap: wrap;
         align-content: stretch;
@@ -196,12 +49,7 @@ button {
 
         .repositories-li {
             flex-basis: 400px;
-            position: relative;
-            margin: 10px;
-            padding: 10px 10px;
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
             overflow: hidden;
         }
 
@@ -210,52 +58,9 @@ button {
             }
 
             .repository-link {
-                display: flex;
                 width: 100%;
             }
 
-            .repo-icon {
-                margin: 0px 20px 0px 5px;
-            }
-
-            .notification {
-                margin-left: auto;
-            }
-
-            .dash-repo-owner-name {
-                font-weight: 50;
-                color: #ffffff88;
-                font-style: italic;
-            }
-
-            .dash-repo-description {
-                font-weight: 50;
-                color: #ffffff88;
-            }
-
-            .dash-collaborators {
-                display: flex;
-                justify-content: space-between;
-            }
-
-                .dash-collaborators div {
-                    display: flex;
-                }
-
-#new-repository-form {
-    width: 80vw;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-    #new-repository-form #id_submit {
-        margin: 10px;
-        padding: 8px;
-        font-size: large;
-        width: 300px;
-    }
-    
     #id_name, #id_description, #id_collaborators, #id_owner {
         margin: 10px;
         border: solid;
@@ -281,144 +86,21 @@ button {
         background-color: red;
     }
 
+/* REPOSITORY VIEW */
 #repository-container {
     grid-column: 1 / span 3;
-    display: grid;
     grid-template-rows: 30vh 65vh;
     grid-template-columns: 3fr 5fr;
 }
     #repository-details {
-        background-color: #313338;
         grid-area: 1 / 1 / span 1 / span 1;
-        display: grid;
-        grid-template-rows: 1fr 5fr;
-        grid-template-columns: 5fr 3fr;
     }
-        #repository-details-details {
-            grid-area: 2 / 1 / span 1 / span 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding-left: 30px;
-            padding-right: 30px;
-        }
-
-        #repository-details-collaborators {
-            grid-area: 2 / 2 / span 1 / span 1;
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-            overflow-y: scroll;
-        }
-
-            #collaborators-header {
-                display: flex;
-                justify-content: center;
-                align-items: flex-end;
-            }
-
-            #collaborators-header button{
-                display: none;
-                align-self: flex-start;
-                margin-left: auto;
-                margin-top: 0px;
-            }           
-
-            .collaborator-container {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .collaborator-container p {
-                margin: 5px 5px;
-            }
-
-            
-
-        #repository-settings {
-            display: flex;
-            align-items: center;
-        }
-
-        #repository-settings p, #repository-settings svg {
-            margin-left:20px;
-        }
-
-        #repository-details form {
-            grid-area: 1 / 1 / span 2 / span 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;    
-        }
-
     #repository-contents {
-        padding-left: 20px;
-        background-color: #2b2d31;
         grid-area: 2 / 1 / span 1 / span 1;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        overflow-y: scroll;
     }
-
-        #repository-contents-topbar{
-            display: flex;
-            justify-content: space-between;
-        }
-
-            #new-directory-modal {
-                display: none; /* Hidden by default */
-                position: fixed;
-                z-index: 1;
-                width: 100%; 
-                height: 100%; /* Full height */
-                overflow: auto; /* Enable scroll if needed */
-                background-color: transparent; /* Fallback color */
-            }
-
-                #new-directory-form {
-                    background-color: transparent;
-                    padding: 10px;
-                    margin-left: 300px;
-                    width: 80%; /* Could be more or less, depending on screen size */
-                }
-
-                    #new-directory-form * {
-                        background-color: transparent;
-                        color: white;
-                        font-size: large;
-                        padding: 7px;
-                    }
-
-                    #new-directory-form input[type="submit"] {
-                        border: none;
-                    }
-
-            #current-path {
-                display: flex;
-                justify-content: space-around;
-            }
-
-                #repository-contents-topbar p {
-                    color: #457CE8;
-                }
-
-            #new-directory {
-                padding-top: 0px;
-                border: none;
-                background-color: #2b2d31;
-                width:fit-content;
-            }
-
-        
-
-        .file-entries {
-            display: flex;
-            align-items: center;
-            overflow-y: scroll;
+ 
+        #new-directory-form {
+            margin-left: 300px;
         }
 
         .file-entries p {
@@ -427,99 +109,52 @@ button {
             flex-grow: 1;
         }
 
-        .delete-btn {
-            z-index: 1;
-            margin: 0px;
-            background-color: transparent;
-            margin-left: auto;
-        }
 
     #soundwave {
-        background-color: #1f1f1f;
         grid-area: 1 / 2 / span 1 / span 1;
-        height: 100%;
-        overflow-y: scroll;
-        display:flex;
-        flex-direction: column;
-        justify-content: center;
     }
 
-        #soundwave ::part(scroll) {
-            margin-top: 50px;
-            margin-bottom: 50px;
-        }
-        
     #chat-container {
-        background-color: #1f1f1f;
         grid-area: 2 / 2 / span 1 / span 1;
-
-        height: 100%;
         padding: 10px 100px 10px 100px;
-        display: flex;
-        flex-direction: column;
     }
-
-    #chat {
-        height: 48vh;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        overflow-y: scroll;
-    }
-
-        .comment-container {
-            
-            margin: 20px;
-            padding: 0px 10px 5px 10px;
-            background-color: #313338;
-            max-width: 50%;
-            border-radius: 10px;
-
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .user-comment-container {
-            background-color: black;
-            align-self: flex-end;
-        }
-
-            .comment-container * {
-                margin: 6px 0px;
-            }
-
-            .commenter {
-                font-weight: bold;
-            }
-            .timestamp {
-                font-size: x-small;
-                font-style: italic;
-                align-self: flex-end;
-            }
 
         #chat-container form {
             margin-top: 20px;
-            align-self: stretch;
+        }
+            
 
-            display: flex;
-            align-items: center;
-            bottom: 0;
+/* SETTINGS */
+
+#settings-container{
+    padding-top: 20px;
+    grid-column: 1 / span 3;
+    
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-rows: 1fr auto 1fr;
+
+    background-color: #101010;
+}
+
+    #back {
+        grid-area: 1 / 1 / span 1 / span 1;
+        margin: 10px;
+    }
+    
+        #back-link {
+            padding: 5px 10px;
         }
 
-            button[type="submit"] {
-                margin: 0px;
-                background-color: #1f1f1f;
-            }
+#search-form-modal {
+    grid-template-columns: 1fr 2fr 1fr;
+}
 
-            #comment-input {
-                color: white;
-                font-size: medium;
-                width: 80%;
-                background-color: black;
-                min-height: 40px;
+    #search-form-container {
+        grid-area: 2 / 2 / span 1 / span 1;
+        max-height: 500px;
+    }
 
-                display: flex;
-                flex-wrap: wrap;
-                overflow: visible;
-            }
+    #input-search {
+        width:400px;
+    }   
