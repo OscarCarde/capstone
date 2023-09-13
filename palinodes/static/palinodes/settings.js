@@ -1,4 +1,4 @@
-import { addCollaborator, removeCollaborator, deleteDirectory, hello } from "./helpers.js";
+import { leaveRepository, addCollaborator, removeCollaborator, deleteDirectory, hello } from "./helpers.js";
 var repositorypk;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,11 +14,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //DELETE REPOSITORY
     var deleteBtn = document.querySelector("#delete-repository");
-    deleteBtn.onclick = () => {
-        deleteDirectory(repositorypk);
-        window.location.href = "/dashboard";
+    if(deleteBtn != null) {
+        deleteBtn.onclick = () => {
+            deleteDirectory(repositorypk);
+            window.location.href = "/dashboard";
+        }
     }
 
+    //LEAVE REPOSITORY
+    var leaveBtn = document.querySelector("#leave-repository");
+    if(leaveBtn != null) {
+        leaveBtn.onclick = () => {
+            leaveRepository(repositorypk);
+            window.location.href = "/dashboard";
+        }
+    }
+    
     //REMOVE COLLABORATORS
     document.querySelectorAll(".remove-collaborator").forEach(btn => {
         btn.onclick = () => {
@@ -61,11 +72,13 @@ async function searchUsers(value) {
                 if(user.avatar != null) {
                     userContainer.querySelector(".avatar-sm").setAttribute("src", user.avatar);
                 }
+
                 //set user's name
                 userContainer.querySelector(".collaborator-username").innerHTML = user.username;
 
                 userContainer.style.display = "flex";
                 userContainer.id = "";
+
                 usersListContainer.append(userContainer);
 
                 userContainer.addEventListener("click", () => {

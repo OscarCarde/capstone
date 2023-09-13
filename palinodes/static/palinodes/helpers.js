@@ -1,5 +1,18 @@
 const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
 
+export function leaveRepository(repositorypk) {
+    fetch(`/leave/${repositorypk}`, {
+        method: 'POST',
+        headers: {
+            'ContentType': 'application/json',
+            'X-CSRFtoken': csrftoken,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message);
+    })
+}
 
 export async function addCollaborator(userpk, repositorypk) {
     //add collaborator with api call
@@ -17,7 +30,7 @@ export async function addCollaborator(userpk, repositorypk) {
     .then(response => response.json())
     .then(data => {
         console.log(data.message);
-        
+
     })
 }
 export function removeCollaborator(collaboratorpk, repositorypk) {
