@@ -492,6 +492,7 @@ button {
         }
 
         #collaborators-form {
+            align-self: stretch;
             border: solid #ffffff88;
             border-radius: 10px;
             border-width: 1px;

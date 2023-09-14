@@ -98,8 +98,9 @@ class ProfileTestCase(TestCase):
         self.assertListEqual([2000, 3000, 1000], actual_repositories, "the profile's repositories don't match")
 
 class NotificationTestCase(TestCase):
-    #TODO
-    pass
+    
+    def setUp(self):
+        pass
 
 class RepositorySerializerTestCase(TestCase):
     def setUp(self) -> None:
@@ -167,8 +168,8 @@ class NewDirectoryApiTestCase(TestCase):
         c.logout()
 
 class DeleteDirectoryApiTestCase(TestCase):
-    #TODO
-    pass
+    def setUp(self):
+        pass
 
 class NewFileApiTestCase(TestCase):
     def setUp(self) -> None:

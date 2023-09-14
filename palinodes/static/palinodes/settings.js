@@ -31,12 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     //REMOVE COLLABORATORS
-    document.querySelectorAll(".remove-collaborator").forEach(btn => {
-        btn.onclick = () => {
-            btn.parentElement.style.display = 'none';
-            removeCollaborator(btn.dataset.collaborator, repositorypk);
-        }
-    })
+    let removeCollaboratorBtns = document.querySelectorAll(".remove-collaborator");
+    if(removeCollaboratorBtns != null) {
+        removeCollaboratorBtns.forEach(btn => {
+            btn.onclick = () => {
+                btn.parentElement.style.display = 'none';
+                removeCollaborator(btn.dataset.collaborator, repositorypk);
+            }
+        })
+    }
+    
 
     //ADD COLLABORATORS
     var addCollaboratorBtn = document.querySelector("#add-collaborator-btn");
@@ -47,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.onclick = function(event) {
             if (event.target == modal) {
               modal.style.display = "none";
+              window.location.href = "settings";
             }
         }
     }
@@ -83,6 +88,7 @@ async function searchUsers(value) {
 
                 userContainer.addEventListener("click", () => {
                     addCollaborator(user.pk, repositorypk);
+                    userContainer.querySelector(".toggle-collaborator").innerHTML = "added";
                 })
             })
         });

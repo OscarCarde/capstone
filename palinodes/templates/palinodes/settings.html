@@ -56,9 +56,11 @@
                     <img class="avatar-sm" src="{{MEDIA_URL}}/media/Default-Profile-Picture.png" alt="">
                     {% endif %}
                     <p class="collaborator-username">{{collaborator.username}}</p>
+                    {% if user == repository.owner %}
                     <button class="toggle-collaborator remove-collaborator clickable" data-collaborator="{{collaborator.pk}}">
                         <img src="{{MEDIA_URL}}/media/icons/dash.svg" alt="">
                     </button>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
