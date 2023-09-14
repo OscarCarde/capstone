@@ -229,7 +229,7 @@ async function loadDirectoryContents(directory_pk) {
                 deleteFile(file.pk);
             }
 
-            let filename = document.createElement('p');
+            var filename = document.createElement('p');
             filename.className = "clickable";
             filename.style.display = "block";
             filename.innerHTML = file.filename;
@@ -257,7 +257,19 @@ async function loadDirectoryContents(directory_pk) {
             }
             else {
                 var hiddenfileIcon = document.querySelector("#file-icon");
+                filename.addEventListener( "click", () => {
+                    const newWindow = window.open(file.fileurl, file.filename, `width=600, height=600`);
+
+                    // Make sure the new window was successfully opened
+                    if (newWindow) {
+                        newWindow.focus();
+                    } else {
+                        alert('Popup blocked! Please allow popups for this site.');
+                    }
+                })
+                
             }
+
             let fileIcon = hiddenfileIcon.cloneNode(true);
             fileIcon.style.display = "block";
 

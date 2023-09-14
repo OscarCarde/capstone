@@ -48,8 +48,6 @@ def search_collaborators_api(request, substring):
     except Exception as e:
         return JsonResponse({"message": str(e)}, status=500)
 
-
-
 @login_required
 def remove_collaborator_api(request, repositorypk):
     raw_content = request.body
@@ -152,7 +150,7 @@ def delete_file_api(request):
     try:
         file = FileModel.objects.get(pk=filepk)
 
-        send_notifications(request.user, file.repository, f"File {file.filename} was deleted by {request.user.username}") 
+        send_notifications(request.user, file.parent.repository, f"File {file.filename} was deleted by {request.user.username}") 
 
         file.delete()
         return JsonResponse({"message": "file deleted successfully"})

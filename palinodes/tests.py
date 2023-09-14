@@ -24,6 +24,10 @@ class DirectoryTestCase(TestCase):
 
         self.comment = Comment.objects.create(user=self.user1, repository=self.repo, comment="Test comment", timestamp=self.time)
 
+    def tearDown(self):
+        self.file.file.delete()
+        super().tearDown()
+
     def test_is_repository(self):
         self.assertEquals(True, self.repo.is_repository)
 
@@ -191,8 +195,25 @@ class NewFileApiTestCase(TestCase):
         c.logout()
 
 class DeleteFileApiTestCase(TestCase):
-    #TODO
-    pass
+
+    def setUp(self) -> None:
+        self.user = User.objects.create(id=1000, username = "Alice", password="1234")
+        self.dir = Directory.objects.create(pk=2000, name="test dir", owner = self.user, description="Test Directory")
+        with open("palinodes/testFiles/codine.mp3", 'rb') as file:
+            self.file = FileModel(parent=self.dir)
+            self.file.file.save('codine.mp3', File(file))
+
+    def tearDown(self):
+        self.file.file.delete()
+        super().tearDown()
+
+    def test_delete_file(self):
+        c = Client()
+        c.force_login(self.user)
+        response = c.post("/delete-file", {"filepk": self.file.pk}, content_type="application/json")
+
+        self.assertEquals(200, response.status_code, response.json()["message"])
+
 
 class NotificationsApiTestCase(TestCase):
     #TODO
