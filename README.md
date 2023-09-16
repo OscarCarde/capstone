@@ -1,3 +1,11 @@
+**Distinctiveness and Complexity:**
+  My Web application satisfies the distinctiveness requirements as it differs from any project done in this course. It is focused on file sharing and collaboration on music projects and has for features:
+  - The sharing and serving of files 
+  - A chat section for each music project
+  - An audio waveform visualisation and player for audio files
+  - A directory structure in each project that let's the user navigate through directories
+  - a search feature to add collaborators
+I believe it satisifies the complexity requirements by the range of features that it posseses
 **Specification:**
 
 - [x] User Authentication and Registration:
@@ -40,31 +48,15 @@
   - [x] they can upload files in the desired location in their repository,
   - [x] delete files 
   - [x] delete folders with all their contents,
+  - [x] When a user clicks on a file that isn't an audiofile, it should open in a new browser window
 
-- [ ] Settings: Each repository should have a link to a settings page for that repository accessible by all collaborators
+- [x] Settings: Each repository should have a link to a settings page for that repository accessible by all collaborators
   - [x] From the settings, A user should be able to rename the repository and change its description
   - [x] They should be able to delete the repository if they are the owner
   - [x] They should be able to leave the repository instead if they are collaborators
-  - [ ] The owner should be able to remove collaborators
-  - [ ] Any collaborator should be able to add other collaborators by finding them by username
-
-- [ ] **Additional Features:**
-  - [ ] Search and Discovery:
-    - [ ] Search functionality to find public projects based on keywords or tags.
-    - [ ] Trending and popular projects based on user interactions.
-
-  - [ ] Analytics and Insights:
-    - [ ] Basic analytics for projects, such as track play counts and collaborator contributions.
-
-  - [ ] Security and Privacy:
-    - [ ] Proper authentication and authorization mechanisms to ensure data privacy and security.
-    - [ ] Secure storage and handling of music files and user data.
-
-  - [ ] Deployment and Hosting:
-    - [ ] Deploy the web app on a cloud hosting platform like Heroku or DigitalOcean.
+  - [x] The owner should be able to remove collaborators
+  - [x] Any collaborator should be able to add other collaborators by finding them by username
 
 
-
-**Distinctiveness and Complexity:**
 **Files:**
 **How to run the application:**

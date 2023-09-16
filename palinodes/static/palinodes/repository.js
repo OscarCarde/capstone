@@ -241,8 +241,8 @@ async function loadDirectoryContents(directory_pk) {
                     soundwave.replaceChildren();
                     wavesurfer = WaveSurfer.create({
                         container: '#soundwave',
-                        waveColor: '#ffffff',
-                        progressColor: '#999999',
+                        waveColor: '#ff003fef',
+                        progressColor: '#66000f',
                         autoplay: true,
                         url: file.fileurl,
                         mediaControls: true,
@@ -253,6 +253,13 @@ async function loadDirectoryContents(directory_pk) {
                     });
 
                     wavesurfer.play();
+                    
+                    document.addEventListener('keydown', function(event) {
+                        if (event.key === ' ') { 
+                          wavesurfer.playPause(); 
+                          event.preventDefault();
+                        }
+                      });
                 });
             }
             else {
