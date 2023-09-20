@@ -118,7 +118,3 @@ I recommend using a virtual environment like venv.
   - [x] They should be able to leave the repository instead if they are collaborators
   - [x] The owner should be able to remove collaborators
   - [x] Any collaborator should be able to add other collaborators by finding them by username
-
-
-
-**How to run the application:**
