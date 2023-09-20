@@ -60,6 +60,14 @@
     - requirements.txt: the set of requirements to install to be able to run the project
     - testFiles: files used for unit testing
 
+**How to run**:
+I recommend using a virtual environment like venv.
+
+- clone the repository
+- install requirements in requirements.txt with pip `pip install requirements.txt`
+- run the application with `python3 manage.py runserver`
+- login as superuser with username _admin_ and password _1234_
+
 **Specification:**
 
 - [x] User Authentication and Registration:

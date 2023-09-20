@@ -100,7 +100,7 @@ def repository_view(request, repository_id):
 
     return render(request, "palinodes/repository.html", {
         "repository": repository,
-    })
+        })
 
 
 ##################__AUTHENTICATION__################
