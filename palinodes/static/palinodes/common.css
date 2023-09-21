@@ -320,6 +320,11 @@ button {
             width:fit-content;
         }
 
+            #new-directory-form input[type="submit"] {
+                width: fit-content;
+                margin: 0;
+            }
+
         .file-entries {
             display: flex;
             align-items: center;
@@ -393,13 +398,22 @@ button {
             align-self: flex-end;
         }
 
-        #chat-container form {
+        #new-comment {
             align-self: stretch;
 
             display: flex;
             align-items: center;
             bottom: 0;
         }
+
+            #new-comment textarea {
+                margin: 0px;
+            }
+            #new-comment button {
+                margin: 0px;
+                background-color: #1f1f1f;
+            }
+
 
         button[type="submit"] {
             margin: 0px;
