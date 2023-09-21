@@ -22,7 +22,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         //add event listener to form for saving new directory
         var submit = document.querySelector("#new-directory-form");
-        submit.addEventListener('submit', () => {
+        submit.addEventListener('submit', event => {
+            event.preventDefault();
             //call function to create new directory
             var newDirectoryName = document.querySelector("#new-directory-name").value;
             if(newDirectoryName != null) {
@@ -39,11 +40,22 @@ document.addEventListener('DOMContentLoaded', function() {
     loadChat(repositorypk);
 
     //NEW COMMENT
-    //TODO: Display new comment without fetch call to keep audio track loaded
-    document.querySelector("#new-comment").onsubmit = async () => {
+    document.querySelector("#new-comment button").onclick = () => {
         var comment = document.querySelector("#comment-input").value;
+
+        if(comment != "") {
+            var commentContainer = document.querySelector("#comment-template-self").cloneNode(true);
+        commentContainer.id = "";
+        commentContainer.style.display = "flex";
+        commentContainer.querySelector(".comment").innerHTML = comment;
+        commentContainer.querySelector(".timestamp").innerHTML = "now";
+
+        let container = document.querySelector("#chat")
+        container.append(commentContainer);
+        container.scrollTop = container.scrollHeight;
+
         console.log(comment);
-        await fetch("/new-comment", {
+        fetch("/new-comment", {
             method: 'POST', 
             headers: {
                 'ContentType':'application/json',
@@ -54,6 +66,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 "repositorypk": repositorypk,
             })
         })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message);
+        })
+
+        document.querySelector("#comment-input").value = "";
+        }
     }
     
 });
@@ -109,6 +128,8 @@ async function createNewDirectory(newDirectoryName) {
     })
     .then(response => response.json())
     .then(data => {
+        console.log(data.message);
+        console.log(data.directory_pk);
         loadDirectoryContents(data.directory_pk);
     })
     
@@ -161,6 +182,9 @@ async function loadDirectoryContents(directory_pk) {
         currentDirectory.setAttribute("data-pk", data.current.pk);
         document.getElementById("contents").append(currentDirectory);
 
+        //add current directory to path
+        var curentPath = document.querySelector("#current-path p");
+        curentPath.innerHTML = data.current.path;
 
         // folder link to return to parent directory
         if(data.parent != null) {
@@ -253,13 +277,6 @@ async function loadDirectoryContents(directory_pk) {
                     });
 
                     wavesurfer.play();
-                    
-                    document.addEventListener('keydown', function(event) {
-                        if (event.key === ' ') { 
-                          wavesurfer.playPause(); 
-                          event.preventDefault();
-                        }
-                      });
                 });
             }
             else {

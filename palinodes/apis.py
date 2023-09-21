@@ -115,7 +115,7 @@ def new_directory_api(request):
         send_notifications(request.user, new_directory.repository, f"Directory {name} added by {request.user.username}")
         
 
-        return JsonResponse({"message": "directory created successfully", "directory-pk": new_directory.pk}, status=200)
+        return JsonResponse({"message": "directory created successfully", "directory_pk": new_directory.pk}, status=200)
     except Directory.DoesNotExist:
         return JsonResponse({"message": f"directory with primary key {parent_pk} does not exist"}, status=400)
     except Exception as e:

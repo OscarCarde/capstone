@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Directory, FileModel, Comment, Notification, User
-from django.conf import settings
+import re
 
 class UserSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField()
@@ -46,10 +46,15 @@ class RepositorySerializer(serializers.ModelSerializer):
         fields = ['name', 'description', 'created', 'owner', 'collaborators_names']
         
 class DirectorySerializer(serializers.ModelSerializer):
-    
+    path = serializers.SerializerMethodField()
+
+    def get_path(self, obj):
+        #returns the directory's path minus the user id
+        return re.sub("\d+/", "", obj.path, count=1)
+
     class Meta:
         model=Directory
-        fields=['pk', 'name']
+        fields=['pk', 'name', 'path']
 
 class FileSerializer(serializers.ModelSerializer):
     filename = serializers.SerializerMethodField()
