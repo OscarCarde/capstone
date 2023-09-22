@@ -268,12 +268,12 @@ button {
         display: flex;
         flex-direction: column;
         height: 100%;
-        overflow-y: scroll;
     }        
     
     #repository-contents-topbar{
         display: flex;
         justify-content: space-between;
+        
     }
 
     #new-directory-modal {
@@ -306,8 +306,8 @@ button {
 
     #current-path {
         display: flex;
-        justify-content: space-around;
-        max-width: 100%;
+        justify-content: flex-start;
+        width: 100%;
         overflow-x: scroll;
     }
 
@@ -327,10 +327,24 @@ button {
                 margin: 0;
             }
 
+    #contents {
+        overflow-y: scroll;
+        height: 70%;
+    }
+
+        #file-input {
+            max-width: 250px;
+        }
+
         .file-entries {
             display: flex;
             align-items: center;
-            overflow-y: scroll;
+        }
+
+        .file-entries p {
+            padding: 10px;
+            padding-left: 20px;
+            margin: 0;
         }
 
         .delete-btn {
@@ -339,6 +353,7 @@ button {
             background-color: transparent;
             margin-left: auto;
         }
+
 
 #soundwave {
     background-color: #1f1f1f;

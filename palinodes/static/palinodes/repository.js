@@ -42,7 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
     loadChat(repositorypk);
 
     //NEW COMMENT
-    document.querySelector("#new-comment button").onclick = () => {
+    document.querySelector("#new-comment").onsubmit = async event => {
+        event.preventDefault();
         var comment = document.querySelector("#comment-input").value;
 
         if(comment != "") {
@@ -57,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
         container.scrollTop = container.scrollHeight;
 
         console.log(comment);
-        fetch("/new-comment", {
+        await fetch("/new-comment", {
             method: 'POST', 
             headers: {
                 'ContentType':'application/json',
