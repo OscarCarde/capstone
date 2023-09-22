@@ -26,10 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             //call function to create new directory
             var newDirectoryName = document.querySelector("#new-directory-name");
-            if(newDirectoryName.value != null) {
+            if(newDirectoryName.value != "") {
                 createNewDirectory(newDirectoryName.value);
+                newDirectoryName.value = "";
             }
-            newDirectoryName.value = "";
+            
         });
     });
 

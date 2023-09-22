@@ -307,6 +307,8 @@ button {
     #current-path {
         display: flex;
         justify-content: space-around;
+        max-width: 100%;
+        overflow-x: scroll;
     }
 
         #repository-contents-topbar p {

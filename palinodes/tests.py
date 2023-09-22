@@ -149,7 +149,7 @@ class DirectoryApiTestCase(TestCase):
         c.login(username= self.user.username, password="1234")
         response = c.get(f"/directory/{self.dir.pk}")
         subdirectories = response.json()["subdirectories"]
-        self.assertListEqual([{"pk":3000, "name":"test subdir"}], subdirectories, "subdirectories don't match")
+        self.assertListEqual([{"pk":3000, "name":"test subdir", 'path': 'test dir/test subdir'}], subdirectories, "subdirectories don't match")
         files = response.json()["files"]
         self.assertDictEqual({"pk": 1000, "filename": "cvt.docx", "fileurl": "/media/1000/test%20dir/cvt.docx", "is_audiofile": False}, files[0], "files don't match")
         c.logout()
