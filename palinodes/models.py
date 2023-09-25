@@ -136,7 +136,7 @@ class FileModel(models.Model):
 ###############################################
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.DO_NOTHING, related_name="comments")
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, related_name="comments")
     timestamp = models.DateTimeField(auto_now_add=True)
     repository = models.ForeignKey(Directory, on_delete=models.CASCADE, related_name="comments")
     comment = models.TextField()
