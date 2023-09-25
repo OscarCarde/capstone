@@ -30,12 +30,19 @@ def add_collaborator_api(request):
         repository = Directory.objects.get(pk=repositorypk)
         new_collaborator = User.objects.get(pk=new_collaboratorpk)
 
-        repository.collaborators.add(new_collaborator)
+        if new_collaborator != repository.owner:
 
-        return JsonResponse({"message": "user added successfully"}, status=200)
+            if repository.owner == request.user or repository.collaborators.contains(request.user):
+                repository.collaborators.add(new_collaborator)
+
+                return JsonResponse({"message": "user added successfully"}, status=200)
+            else:
+                return JsonResponse({"message": "You don't have permission to do this"}, status=500)
+        else:
+            return JsonResponse({"message": "user already owns the repository"}, status=500)
     
     except Exception as e:
-        return JsonResponse({"message": str(e)})
+        return JsonResponse({"message": str(e)}, status=500)
 
 def search_collaborators_api(request, substring):
 
@@ -55,12 +62,15 @@ def remove_collaborator_api(request, repositorypk):
     collaboratorpk = loaded_content.get("pk")
 
     try:
+
         repository = Directory.objects.get(pk= repositorypk)
         collaborator = User.objects.get(pk=collaboratorpk)
 
-        repository.collaborators.remove(collaborator)
-
-        return JsonResponse({"message": f"{collaborator.username} removed successfully"}, status=200)
+        if request.user == repository.owner:
+            repository.collaborators.remove(collaborator)
+            return JsonResponse({"message": f"{collaborator.username} removed successfully"}, status=200)
+        else:
+            return JsonResponse({"message": "You don't have permission to do this"}, status=200)
     except Directory.DoesNotExist:
         return JsonResponse({"message": f"repository with id {repositorypk} can't be found."}, status=400)
     except User.DoesNotExist: 

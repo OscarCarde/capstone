@@ -62,6 +62,7 @@
 
 **How to run**:
 I recommend using a virtual environment like venv.
+You need to be connected to the internet for the cdn libraries.
 
 - clone the repository
 - install requirements in requirements.txt with pip `pip install requirements.txt`
@@ -81,14 +82,18 @@ I recommend using a virtual environment like venv.
   - [x] Each repository should display it's title, description, owner and number of collaborators
   - [x] When clicking on a repository, the user should be directed to the page for that repository
     
+- [x] Profile: From their Dashboard, users should be able to update their profile's details
+  - [x] The form should appear on the same page
+
 - [x] Create View: There should be a link on the dashboard to bring the user to a new repository form 
   - [x]  Users can create new music project repository, providing a title and description.
 
-- [x] Comments:
-  - [x] The chatbox appears next to the file structure in a repository
-  - [x] Each chat is associated to a specific repository and is only accessed when on this repository's page
-  - [x] Collaborators can comment in repositories
-  - [x] Messages appear timestamped with the most recent at the bottom
+- [x] Project View:
+  - [x] The owner and collaborating users can create directories,
+  - [x] they can upload files in the desired location in their repository,
+  - [x] delete files 
+  - [x] delete folders with all their contents,
+  - [x] When a user clicks on a file that isn't an audiofile, it should open in a new browser window or download
 
 - [x] File Storage:
     - [x] The file structure of repositories looks and feels like a standard hierarchical file structure.
@@ -98,23 +103,19 @@ I recommend using a virtual environment like venv.
     - [x] When clicking on an audio file, the file should play 
     - [x] When playing, the file should be visualized as an audio waveform with a time banner
 
-- [x] Profile: From their Dashboard, users should be able to update their profile's details
-  - [x] The form should appear on the same page
-
-- [x] Responsive: The website should display an interface appropriate the the device it is viewed on
+- [x] Comments:
+  - [x] The chatbox appears next to the file structure in a repository
+  - [x] Each chat is associated to a specific repository and is only accessed when on this repository's page
+  - [x] Collaborators can comment in repositories
+  - [x] Messages appear timestamped with the most recent at the bottom
 
 - [x] Notifications: the Dashboard should display a notification on each repository with a new message or file uploaded
 
-- [x] Project View:
-  - [x] The owner and collaborating users can create directories,
-  - [x] they can upload files in the desired location in their repository,
-  - [x] delete files 
-  - [x] delete folders with all their contents,
-  - [x] When a user clicks on a file that isn't an audiofile, it should open in a new browser window
-
 - [x] Settings: Each repository should have a link to a settings page for that repository accessible by all collaborators
   - [x] From the settings, A user should be able to rename the repository and change its description
-  - [x] They should be able to delete the repository if they are the owner
   - [x] They should be able to leave the repository instead if they are collaborators
+  - [x] They should be able to delete the repository if they are the owner
   - [x] The owner should be able to remove collaborators
   - [x] Any collaborator should be able to add other collaborators by finding them by username
+
+- [x] Responsive: The website should display an interface appropriate to the device it is viewed on
