@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    "rest_framework",
     "palinodes",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -39,6 +40,14 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+
+# Django Rest Framework settings 
+REST_FRAMEWORK = { 
+    # Allow unauthenticated access to public content 
+    'DEFAULT_PERMISSION_CLASSES': [ 
+        'rest_framework.permissions.AllowAny' 
+    ] 
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

@@ -1,7 +1,7 @@
 const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
 
 export function leaveRepository(repositorypk) {
-    fetch(`/leave/${repositorypk}`, {
+    fetch(`/api/leave/${repositorypk}`, {
         method: 'POST',
         headers: {
             'ContentType': 'application/json',
@@ -16,10 +16,10 @@ export function leaveRepository(repositorypk) {
 
 export async function addCollaborator(userpk, repositorypk) {
     //add collaborator with api call
-    await fetch("/add-collaborator", {
+    await fetch("/api/add-collaborator", {
         method: 'POST',
         headers: {
-            'ContentType': "application/json",
+            'Content-Type': "application/json",
             'X-CSRFToken': csrftoken,
         },
         body: JSON.stringify({
@@ -35,10 +35,10 @@ export async function addCollaborator(userpk, repositorypk) {
 }
 export function removeCollaborator(collaboratorpk, repositorypk) {
     //remove collaborator with api call
-    fetch(`/remove-collaborator/${repositorypk}`, {
+    fetch(`/api/remove-collaborator/${repositorypk}`, {
         method: 'post',
         headers: {
-            'ContentType': "application/json",
+            'Content-Type': "application/json",
             'X-CSRFToken': csrftoken,
         },
         body: JSON.stringify({
@@ -52,10 +52,10 @@ export function removeCollaborator(collaboratorpk, repositorypk) {
 }
 
 export async function deleteDirectory(pk) {
-    fetch("/delete-directory", {
+    fetch("/api/delete-directory", {
         method: 'POST',
         headers: {
-            'ContentType': "application/json",
+            'Content-Type': "application/json",
             'X-CSRFToken': csrftoken,
         },
         body: JSON.stringify({
@@ -66,10 +66,10 @@ export async function deleteDirectory(pk) {
 }
 
 export async function deleteFile(pk) {
-    await fetch("/delete-file", {
+    await fetch("/api/delete-file", {
         method: 'POST',
         headers: {
-            'ContentType': "application/json",
+            'Content-Type': "application/json",
             'X-CSRFToken': csrftoken,
         },
         body: JSON.stringify({
