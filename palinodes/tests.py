@@ -147,7 +147,7 @@ class DirectoryApiTestCase(TestCase):
     def test_api_endpoint(self):
         c = Client()
         c.login(username= self.user.username, password="1234")
-        response = c.get(f"/directory/{self.dir.pk}")
+        response = c.get(f"/api/directory?pk={self.dir.pk}")
         subdirectories = response.json()["subdirectories"]
         self.assertListEqual([{"pk":3000, "name":"test subdir", 'path': 'test dir/test subdir'}], subdirectories, "subdirectories don't match")
         files = response.json()["files"]
@@ -164,7 +164,7 @@ class NewDirectoryApiTestCase(TestCase):
     def test_new_directory(self):
         c = Client()
         c.force_login(self.user)
-        response = c.post("/new-directory", {"name": "test subsubdir", "parent_pk": self.dir1.pk}, content_type="application/json")
+        response = c.post("/api/new-directory", {"name": "test subsubdir", "parent_pk": self.dir1.pk}, content_type="application/json")
         self.assertEquals(200, response.status_code, f"wrong status code, api failed to save new directory, instead gave:\n {response.json()['message']}")
         directory = Directory.objects.get(name="test subsubdir")
         if directory:
@@ -186,7 +186,7 @@ class NewFileApiTestCase(TestCase):
         c = Client()
         c.force_login(self.user)
         with open("palinodes/testFiles/codine.mp3", 'rb') as file:
-            response = c.post("/new-file", {"file": file, "parentpk": self.dir.pk})
+            response = c.post("/api/new-file", {"file": file, "parentpk": self.dir.pk})
         self.assertEquals(200, response.status_code, response.json()["message"])
         instance = FileModel.objects.get(parent=self.dir)
         self.assertIsNotNone(instance, "instance not saved")
@@ -210,7 +210,7 @@ class DeleteFileApiTestCase(TestCase):
     def test_delete_file(self):
         c = Client()
         c.force_login(self.user)
-        response = c.post("/delete-file", {"filepk": self.file.pk}, content_type="application/json")
+        response = c.post("/api/delete-file", {"filepk": self.file.pk}, content_type="application/json")
 
         self.assertEquals(200, response.status_code, response.json()["message"])
 

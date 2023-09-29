@@ -58,10 +58,10 @@ document.addEventListener('DOMContentLoaded', function() {
         container.scrollTop = container.scrollHeight;
 
         console.log(comment);
-        await fetch("/new-comment", {
+        await fetch("/api/new-comment", {
             method: 'POST', 
             headers: {
-                'ContentType':'application/json',
+                'Content-Type':'application/json',
                 'X-CSRFToken': csrftoken,
             },
             body: JSON.stringify({
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadChat(repositorypk) {
     console.log(user);
-    fetch(`/repository/${repositorypk}/comments`)
+    fetch(`/api/comments?pk=${repositorypk}`)
     .then(response => response.json())
     .then(data => {
         var container = document.querySelector("#chat");
@@ -118,10 +118,10 @@ async function createNewDirectory(newDirectoryName) {
     //with the current directory as parent
     var parent_pk = document.querySelector("#parent").dataset.pk;
 
-    await fetch("/new-directory", {
+    await fetch("/api/new-directory", {
         method: 'POST',
         headers: {
-            'ContentType':'application/json',
+            'Content-Type':'application/json',
             'X-CSRFToken': csrftoken,
         },
         body: JSON.stringify({
@@ -155,7 +155,7 @@ async function loadDirectoryContents(directory_pk) {
         console.log(directory_pk);
         console.log(data);
 
-        await fetch("/new-file", {
+        await fetch("/api/new-file", {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrftoken,
@@ -173,7 +173,7 @@ async function loadDirectoryContents(directory_pk) {
 
     //get the contents from the directory with primary key directory_pk
     //create a list of elements with the directory's contents
-    await fetch(`/directory/${directory_pk}`)
+    await fetch(`/api/directory?pk=${directory_pk}`)
     .then(response => response.json())
     .then(data => {
 

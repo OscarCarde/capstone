@@ -68,7 +68,7 @@ async function searchUsers(value) {
     usersListContainer.replaceChildren();
     if(value != "") {
         //retreive first 10 users that have the substring value
-        await fetch(`/search-collaborators/${value}`)
+        await fetch(`/api/search-collaborators?substring=${value}`)
         .then(response => response.json())
         .then(data => {
             data.users.forEach(user => {
