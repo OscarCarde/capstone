@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-@-0a)z_m_1z--4nm+*&4crmbv=(dtw+!viu75ntzpx*)b2=b9m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'pacific-tundra-61211-ca28d1b770ad.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'evening-thicket-07641-fd7881189f05.herokuapp.com']
 
 
 # Application definition
@@ -85,8 +85,13 @@ WSGI_APPLICATION = "capstone.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "d3cmr1a1n0u93i",
+        "USER": "rekqhaqgrtrjly",
+        "PASSWORD": "735cfbb83e3921e9f75a66ec809b01d91aab3087b8f7b1ee6a29d8c69b69e740",
+        "HOST": "ec2-44-214-132-149.compute-1.amazonaws.com",
+        "PORT": "5432"
+
     }
 }
 
