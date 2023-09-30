@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'evening-thicket-07641-fd7881189f05.herokuapp.com'
 # Application definition
 
 INSTALLED_APPS = [
+    "storages",
     "rest_framework",
     "palinodes",
     "django.contrib.admin",
@@ -40,6 +41,25 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+
+AWS_STORAGE_BUCKET_NAME = 'django-palinodes'
+AWS_S3_REGION_NAME = 'us-east-1'  # e.g. us-east-2
+AWS_ACCESS_KEY_ID = 'AKIAV2JENG52C3SKHLF3'
+AWS_SECRET_ACCESS_KEY = 'Jp+jg64G9TBEwsJDlV+OMtS+oP8c5NOAYdy7ubrg'
+
+# Tell django-storages the domain to use to refer to static files.
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_DEFAULT_ACL = None
+
+STATICFILES_LOCATION = 'static'
+# Tell the staticfiles app to use S3Boto3 storage when writing the collected static files (when
+# you run `collectstatic`).
+STATICFILES_STORAGE = 'custom_storages.StaticStorage'
+
+MEDIAFILES_LOCATION = 'media'
+# Tell the staticfiles app to use S3Boto3 storage when writing the collected static files (when
+# you run `collectstatic`).
+DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
 
 # Django Rest Framework settings 
 REST_FRAMEWORK = { 
@@ -90,8 +110,7 @@ DATABASES = {
         "USER": "rekqhaqgrtrjly",
         "PASSWORD": "735cfbb83e3921e9f75a66ec809b01d91aab3087b8f7b1ee6a29d8c69b69e740",
         "HOST": "ec2-44-214-132-149.compute-1.amazonaws.com",
-        "PORT": "5432"
-
+        "PORT": "5432",
     }
 }
 
