@@ -22,21 +22,23 @@ def index(request):
 @login_required
 def dashboard(request):
     if request.method == 'POST':
-        print("WOLF FENCING: performing post method")
-        profile = request.user.profile
-        avatar = request.FILES.get("avatar")
-        print("WOLF FENCING: checking file: \n" + str(request.FILES.keys()))
-        description = request.POST.get("description")
-        print("WOLF FENCING: checking description: \n" + description)
-        if avatar:
-            profile.avatar = avatar
-        if description:
-            profile.description = description
+        try:
+            print("WOLF FENCING: performing post method")
+            profile = request.user.profile
+            avatar = request.FILES.get("avatar")
+            print("WOLF FENCING: checking file: \n" + str(request.FILES.keys()))
+            description = request.POST.get("description")
+            print("WOLF FENCING: checking description: \n" + description)
+            if avatar:
+                profile.avatar = avatar
+            if description:
+                profile.description = description
 
-        profile.save() 
-        
-        return HttpResponseRedirect(reverse("dashboard"))
-
+            profile.save() 
+            
+            return HttpResponseRedirect(reverse("dashboard"))
+        except Exception as e:
+            print(str(e))
     return render(request, "palinodes/dashboard.html", {
         "profile_form": ProfileForm()
     })
