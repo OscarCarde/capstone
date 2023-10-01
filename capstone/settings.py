@@ -44,8 +44,8 @@ INSTALLED_APPS = [
 
 AWS_STORAGE_BUCKET_NAME = 'django-palinodes'
 AWS_S3_REGION_NAME = 'us-east-1'  # e.g. us-east-2
-AWS_ACCESS_KEY_ID = 'AKIAV2JENG52C3SKHLF3'
-AWS_SECRET_ACCESS_KEY = 'Jp+jg64G9TBEwsJDlV+OMtS+oP8c5NOAYdy7ubrg'
+AWS_ACCESS_KEY_ID = 'AKIAV2JENG52DIAAGGPE'
+AWS_SECRET_ACCESS_KEY = 'TU80F/G9nRSxY4EQucpnFBDzZID6RRtzcvR6rwkL'
 
 # Tell django-storages the domain to use to refer to static files.
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
