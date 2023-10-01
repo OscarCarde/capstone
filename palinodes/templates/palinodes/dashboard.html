@@ -13,7 +13,7 @@
         {% if user.profile.avatar %}
         <img id="avatar" src={{user.profile.avatar.url}}>
         {% else %}
-        <img style="background-color: black;" id="avatar" src='/media/Default-Profile-Picture.png' >
+        <img style="background-color: black;" id="avatar" src='{{MEDIA_URL}}media/Default-Profile-Picture.png' >
         {% endif %}
         <h1>{{user.username}}</h1>
         <p data-description="{{user.profile.description}}" id="profile-description"><em>{{user.profile.description}}</em></p>
