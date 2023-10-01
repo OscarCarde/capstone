@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'evening-thicket-07641-fd7881189f05.herokuapp.com'
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders",
     "storages",
     "rest_framework",
     "palinodes",
@@ -40,6 +41,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://evening-thicket-07641-fd7881189f05.herokuapp.com",
 ]
 
 AWS_STORAGE_BUCKET_NAME = 'django-palinodes'
@@ -70,8 +75,10 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -153,7 +160,7 @@ USE_TZ = True
 
 STATIC_ROOT = f"{BASE_DIR}/palinodes/static"
 STATIC_URL = "static/"
-MEDIA_URL = 'media/'
+MEDIA_URL = 'media/' 
 MEDIA_ROOT = f"{BASE_DIR}/media"
 
 # Default primary key field type
