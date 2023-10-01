@@ -153,7 +153,7 @@ USE_TZ = True
 
 STATIC_ROOT = f"{BASE_DIR}/palinodes/static"
 STATIC_URL = "static/"
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 MEDIA_ROOT = f"{BASE_DIR}/media"
 
 # Default primary key field type
