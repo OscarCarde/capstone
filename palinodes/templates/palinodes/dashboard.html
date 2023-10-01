@@ -13,7 +13,7 @@
         {% if user.profile.avatar %}
         <img id="avatar" src={{user.profile.avatar.url}}>
         {% else %}
-        <img style="background-color: black;" id="avatar" src='{{MEDIA_URL}}media/Default-Profile-Picture.png' >
+        <img style="background-color: black;" id="avatar" src='"https://django-palinodes.s3.amazonaws.com/media/Default-Profile-Picture.png' >
         {% endif %}
         <h1>{{user.username}}</h1>
         <p data-description="{{user.profile.description}}" id="profile-description"><em>{{user.profile.description}}</em></p>
@@ -42,7 +42,7 @@
         <li class="bordered clickable" id="collaborating-btn">Collaborating</li>
         <li class="clickable" id="new-repository-icn" style= "width: auto; height: 24px; padding: 0px; border-radius:90%; align-self: center"> 
             <a href={% url 'new-repository' %}>
-                <img src="{{MEDIA_URL}}media/icons/plus-circle.svg" alt="">
+                <img src="https://django-palinodes.s3.amazonaws.com/media/icons/plus-circle.svg" alt="">
             </a>
                 
         </li>
@@ -53,7 +53,7 @@
             <div style="display:none" class="repositories-li owned-repositories bordered clickable">
                 <a class="link-layer" href={% url 'repository' repository.id %}></a>
                 <div class="repository-link">
-                    <img class="repo-icon" src="{{MEDIA_URL}}media/icons/audio-wave.svg" alt="">
+                    <img class="repo-icon" src="https://django-palinodes.s3.amazonaws.com/media/icons/audio-wave.svg" alt="">
                     <a href={% url 'repository' repository.id %}>
                         <strong>{{repository.name}}</strong>
                     </a>
@@ -79,12 +79,12 @@
             {% for repository in user.profile.collaborating_repositories %}
             <div style="display:none" class="repositories-li collaborating-repositories bordered clickable">
                 <div class="repository-link">
-                    <img src="{{MEDIA_URL}}media/icons/audio-wave.svg" alt="">
+                    <img src="https://django-palinodes.s3.amazonaws.com/media/icons/audio-wave.svg" alt="">
                     <a href={% url 'repository' repository.id %}>
                         <strong>{{repository.name}}</strong>
                     </a>
                     {% if  user in repository.latest_notification.recipients.all %}
-                    <img class="notification" src="{{MEDIA_URL}}media/icons/bell-fill.svg">
+                    <img class="notification" src="https://django-palinodes.s3.amazonaws.com/media/icons/bell-fill.svg">
                     {% endif %}
                 </div>
                 <p class="dash-repo-description">{{repository.description}}</p>
@@ -106,20 +106,20 @@
             <div class="repositories-li all-repositories bordered clickable">
                 <a class="link-layer" href={% url 'repository' repository.id %}></a>
                 <div class="repository-link">
-                    <img src="{{MEDIA_URL}}media/icons/audio-wave.svg" alt="">
+                    <img src="https://django-palinodes.s3.amazonaws.com/media/icons/audio-wave.svg" alt="">
                         
                     <a href={% url 'repository' repository.id %}>
                         <strong>{{repository.name}}</strong>
                     </a>
                     {% if  user in repository.latest_notification.recipients.all %}
-                    <img class="notification" src="{{MEDIA_URL}}media/icons/bell-fill.svg">
+                    <img class="notification" src="https://django-palinodes.s3.amazonaws.com/media/icons/bell-fill.svg">
                     {% endif %}
                 </div>
                 <p class="dash-repo-description">{{repository.description}}</p>
                 <div class="dash-collaborators">
                     <p class="dash-repo-owner-name">owned by {{repository.owner.username}}</p>
                     <div>
-                        <img src="{{MEDIA_URL}}media/icons/people.svg" alt="">
+                        <img src="https://django-palinodes.s3.amazonaws.com/media/icons/people.svg" alt="">
                         <p>{{repository.number_of_collaborators}}</p>
                     </div>
                 </div>
