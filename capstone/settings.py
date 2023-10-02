@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-@-0a)z_m_1z--4nm+*&4crmbv=(dtw+!viu75ntzpx*)b2=b9m"
+SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'evening-thicket-07641-fd7881189f05.herokuapp.com']
 
@@ -46,8 +48,8 @@ INSTALLED_APPS = [
 if not DEBUG:
     AWS_STORAGE_BUCKET_NAME = 'django-palinodes'
     AWS_S3_REGION_NAME = 'us-east-1'  # e.g. us-east-2
-    AWS_ACCESS_KEY_ID = 'AKIAV2JENG52DIAAGGPE'
-    AWS_SECRET_ACCESS_KEY = 'TU80F/G9nRSxY4EQucpnFBDzZID6RRtzcvR6rwkL'
+    AWS_ACCESS_KEY_ID = str(os.getenv('AWS_ACCESS_KEY_ID'))
+    AWS_SECRET_ACCESS_KEY = str(os.getenv('AWS_SECRET_ACCESS_KEY'))
 
     # Tell django-storages the domain to use to refer to static files.
     AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
@@ -111,7 +113,7 @@ if not DEBUG:
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "d3cmr1a1n0u93i",
             "USER": "rekqhaqgrtrjly",
-            "PASSWORD": "735cfbb83e3921e9f75a66ec809b01d91aab3087b8f7b1ee6a29d8c69b69e740",
+            "PASSWORD": str(os.getenv('DATABASE_PASSWORD')),
             "HOST": "ec2-44-214-132-149.compute-1.amazonaws.com",
             "PORT": "5432",
         }
