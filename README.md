@@ -1,6 +1,5 @@
 [![Watch the video](https://img.youtube.com/vi/ASuaOeJHPxo/hqdefault.jpg)](https://www.youtube.com/embed/ASuaOeJHPxo)
 
-[<img src="https://img.youtube.com/vi/<VIDEO_ID>/hqdefault.jpg" width="600" height="300"/>](https://www.youtube.com/embed/ASuaOeJHPxo)
 
 **Distinctiveness and Complexity:**
   My Web application satisfies the distinctiveness requirements as it differs from any project done in this course. It is focused on file sharing and collaboration on music projects and has for features:
