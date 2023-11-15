@@ -12,9 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,13 +26,12 @@ SECRET_KEY = str(os.getenv('SECRET_KEY'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'evening-thicket-07641-fd7881189f05.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    "storages",
     "rest_framework",
     "palinodes",
     "django.contrib.admin",
@@ -44,26 +41,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
-
-if not DEBUG:
-    AWS_STORAGE_BUCKET_NAME = 'django-palinodes'
-    AWS_S3_REGION_NAME = 'us-east-1'  # e.g. us-east-2
-    AWS_ACCESS_KEY_ID = str(os.getenv('AWS_ACCESS_KEY_ID'))
-    AWS_SECRET_ACCESS_KEY = str(os.getenv('AWS_SECRET_ACCESS_KEY'))
-
-    # Tell django-storages the domain to use to refer to static files.
-    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-    AWS_DEFAULT_ACL = None
-
-    STATICFILES_LOCATION = 'static'
-    # Tell the staticfiles app to use S3Boto3 storage when writing the collected static files (when
-    # you run `collectstatic`).
-    STATICFILES_STORAGE = 'custom_storages.StaticStorage'
-
-    MEDIAFILES_LOCATION = 'media'
-    # Tell the staticfiles app to use S3Boto3 storage when writing the collected static files (when
-    # you run `collectstatic`).
-    DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
 
 # Django Rest Framework settings 
 REST_FRAMEWORK = { 
@@ -107,25 +84,12 @@ WSGI_APPLICATION = "capstone.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if not DEBUG:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": "d3cmr1a1n0u93i",
-            "USER": "rekqhaqgrtrjly",
-            "PASSWORD": str(os.getenv('DATABASE_PASSWORD')),
-            "HOST": "ec2-44-214-132-149.compute-1.amazonaws.com",
-            "PORT": "5432",
-        }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
+}
 
 AUTH_USER_MODEL = "palinodes.User"
 LOGIN_REDIRECT_URL = '/login'
