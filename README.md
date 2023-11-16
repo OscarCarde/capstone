@@ -1,5 +1,8 @@
-## Watch demo on youtube:
+# Capstone - Palinodes
+**Harvard CS50W Final project: Full stack Python & Django application** 
+## You can watch a demo of the web app on youtube:
 [![Watch the video](https://img.youtube.com/vi/ASuaOeJHPxo/hqdefault.jpg)](https://www.youtube.com/embed/ASuaOeJHPxo)
+
 
 
 
